@@ -14,6 +14,7 @@ $currentMonth = date("m");
 
 $year_no = isset($_GET['year_no']) ? $_GET['year_no'] : $currentYear;
 $month_no = isset($_GET['month_no']) ? $_GET['month_no'] : $currentMonth;
+$channel = isset($_GET['channel']);
 
 if ($year_no == 0) {
     $year_no = $currentYear;
@@ -21,13 +22,21 @@ if ($year_no == 0) {
 if ($month_no == 0) {
     $month_no = $currentMonth;
 }
-
+if($channel == 'N'){
+    $sqlappoint = "SELECT ah.appoint_no, ah.customer_name, mp.province_name, ah.record_date, ms.status_name
+    FROM appoint_head ah
+    LEFT JOIN ms_province mp ON ah.province_code = mp.province_code
+    LEFT JOIN ms_appoint_status ms ON ah.is_status = ms.status_code
+    WHERE ah.month_no = ? AND ah.year_no = ?";
+$params = array($month_no, $year_no);
+}else{
 $sqlappoint = "SELECT ah.appoint_no, ah.customer_name, mp.province_name, ah.record_date, ms.status_name
                FROM appoint_head ah
                LEFT JOIN ms_province mp ON ah.province_code = mp.province_code
                LEFT JOIN ms_appoint_status ms ON ah.is_status = ms.status_code
-               WHERE ah.month_no = ? AND ah.year_no = ?";
-$params = array($month_no, $year_no);
+               WHERE ah.month_no = ? AND ah.year_no = ? AND ah.is_call = ?";
+$params = array($month_no, $year_no,$channel);
+}
 
 $stmt = sqlsrv_query($objCon, $sqlappoint, $params);
 
