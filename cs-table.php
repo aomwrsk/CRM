@@ -22,7 +22,6 @@ if ($year_no == 0) {
 if ($month_no == 0) {
     $month_no = $currentMonth;
 }
-
 $params = array();
 if ($channel == 'N') {
     $sqlappoint = "SELECT ah.appoint_no, ah.customer_name, mp.province_name, ah.record_date, ms.status_name
@@ -32,7 +31,6 @@ if ($channel == 'N') {
                    WHERE ah.month_no = ? AND ah.year_no = ?";
     $params = array($month_no, $year_no);
 } else {
-
     $sqlappoint = "SELECT ah.appoint_no, ah.customer_name, mp.province_name, ah.record_date, ms.status_name
                    FROM appoint_head ah
                    LEFT JOIN ms_province mp ON ah.province_code = mp.province_code

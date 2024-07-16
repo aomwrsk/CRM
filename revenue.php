@@ -14,6 +14,14 @@ $currentMonth = date("m");
 $year_no = isset($_GET['year_no']) ? $_GET['year_no'] : $currentYear;
 $month_no = isset($_GET['month_no']) ? $_GET['month_no'] : $currentMonth;
 
+$usrid = '117';
+$xuser = "SELECT * FROM xuser WHERE usrid = ?";
+$params = array($usrid);
+$stmt = sqlsrv_query($objCon, $xuser, $params);
+$row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+
+
 if ($year_no == 0 && $month_no == 0) {
     $year_no = $currentYear;
     $sqlrevenue = "SELECT total_before_vat FROM View_SO_SUM WHERE year_no = ?";

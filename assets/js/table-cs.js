@@ -1,7 +1,7 @@
 function fetchData() {
   const year_no = document.getElementById('year').value || 0;
   const month_no = document.getElementById('month').value || 0;
-  const url = `api.php?year_no=${year_no}&month_no=${month_no}`;
+  const url = `cs-table.php?year_no=${year_no}&month_no=${month_no}`;
 
   fetch(url)
     .then(response => {

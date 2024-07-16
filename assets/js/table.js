@@ -3,11 +3,9 @@ function fetchData() {
   const month_no = document.getElementById('month').value || 0;
   const channel = document.getElementById('channel').value || 0;
   let url;
-  if (channel === "N") {
-    url = `api.php?year_no=${year_no}&month_no=${month_no}`;
-  } else {
+
     url = `api.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}`;
-  }
+ 
 
   fetch(url)
     .then(response => {
