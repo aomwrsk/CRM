@@ -186,7 +186,7 @@ function updateTable(data) {
     document.addEventListener('DOMContentLoaded', fetchYear);
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      fetch('127.0.0.1/api/sales')
+      fetch('http://localhost/api/sales') // Make sure the URL is correct
           .then(response => response.json())
           .then(data => {
               const selectElement = document.getElementById('Sales');
@@ -199,3 +199,4 @@ function updateTable(data) {
           })
           .catch(error => console.error('Error fetching data:', error));
   });
+  
