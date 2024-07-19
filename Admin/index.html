@@ -524,7 +524,16 @@
       </nav>
       <div class="col-lg-8">
         <div class="row">
-          <div class="col-xxl-4 col-md-6">
+          <div class="col-xxl-3 col-md-6">
+            <div class="form-floating mb-3">
+              <select class="form-select" id="Sales" aria-label="Sales">
+                <option selected value="N">-</option>
+
+              </select>
+              <label for="Sales">Sales</label>
+            </div>
+          </div>
+          <div class="col-xxl-3 col-md-6">
             <div class="form-floating mb-3">
               <select class="form-select" id="channel" aria-label="Year"onchange="fetchYear()">
                 <option selected value="N">-</option>
@@ -534,7 +543,7 @@
               <label for="channel">Channel</label>
             </div>
           </div>
-      <div class="col-xxl-4 col-md-6">
+      <div class="col-xxl-3 col-md-6">
         <div class="form-floating mb-3">
           <select class="form-select" id="month" aria-label="Month"onchange="fetchYear()">
             <option selected value="0">-</option>
@@ -554,7 +563,7 @@
           <label for="month">Month</label>
         </div>
       </div>
-      <div class="col-xxl-4 col-md-6">
+      <div class="col-xxl-3 col-md-6">
         <div class="form-floating mb-3">
           <select class="form-select" id="year" aria-label="Year"onchange="fetchYear()">
             <option value="0">-</option>
@@ -1249,7 +1258,6 @@
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
   <script src="assets/js/script.js"></script>
-
 </body>
 
 </html>

@@ -1,10 +1,23 @@
 {
-    "version": "1.0.0",
-    "private": true,
-    "scripts": {
-        "release": "code -r CHANGELOG.md && node -e \"process.stdin.once('data', () => process.exit())\" && yarn bumpp --all package.json javascript-version/package.json typescript-version/package.json"
-    },
-    "devDependencies": {
-        "bumpp": "^8.2.1"
-    }
+  "name": "project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon api.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "msnodesqlv8": "^4.2.1",
+    "mssql": "^11.0.1"
+  },
+  "description": ""
 }

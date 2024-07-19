@@ -184,3 +184,18 @@ function updateTable(data) {
       });
     });
     document.addEventListener('DOMContentLoaded', fetchYear);
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      fetch('http://localhost:5000/api/sales')
+          .then(response => response.json())
+          .then(data => {
+              const selectElement = document.getElementById('Sales');
+              data.forEach(item => {
+                  const option = document.createElement('option');
+                  option.value = item.staff_id;
+                  option.textContent = item.fname_e || item.nick_name || item.staff_id; // Choose appropriate display name
+                  selectElement.appendChild(option);
+              });
+          })
+          .catch(error => console.error('Error fetching data:', error));
+  });
