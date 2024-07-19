@@ -16,5 +16,6 @@ app.get('/api/sales', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 80;
+const HOST = '127.0.0.1'; // specify the IP address to listen on
+app.listen(PORT, HOST, () => console.log(`Server running on http://${HOST}:${PORT}`));
