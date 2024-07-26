@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+  <!--meta http-equiv="refresh" content="300"-->
   <title>Dashboard - CRM</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
@@ -279,7 +279,7 @@
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
-      </li><!-- End Dashboard Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
@@ -357,7 +357,7 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Components Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
@@ -385,7 +385,7 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Forms Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
@@ -408,7 +408,7 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Tables Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
@@ -431,7 +431,7 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Charts Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
@@ -454,7 +454,7 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Icons Nav -->
+      </li>
 
       <li class="nav-heading">Pages</li>
 
@@ -463,53 +463,53 @@
           <i class="bi bi-person"></i>
           <span>Profile</span>
         </a>
-      </li><!-- End Profile Page Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-faq.html">
           <i class="bi bi-question-circle"></i>
           <span>F.A.Q</span>
         </a>
-      </li><!-- End F.A.Q Page Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-contact.html">
           <i class="bi bi-envelope"></i>
           <span>Contact</span>
         </a>
-      </li><!-- End Contact Page Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-register.html">
           <i class="bi bi-card-list"></i>
           <span>Register</span>
         </a>
-      </li><!-- End Register Page Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-login.html">
           <i class="bi bi-box-arrow-in-right"></i>
           <span>Login</span>
         </a>
-      </li><!-- End Login Page Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-error-404.html">
           <i class="bi bi-dash-circle"></i>
           <span>Error 404</span>
         </a>
-      </li><!-- End Error 404 Page Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-blank.html">
           <i class="bi bi-calendar-day"></i>
           <span>Blank</span>
         </a>
-      </li><!-- End Blank Page Nav -->
+      </li>
 
     </ul>
 
-  </aside><!-- End Sidebar-->
+  </aside>
 
   <main id="main" class="main">
 
@@ -524,18 +524,29 @@
       </nav>
       <div class="col-lg-8">
         <div class="row">
-          <div class="col-xxl-3 col-md-6">
+          <div class="col-xxl-2 col-md-6">
             <div class="form-floating mb-3">
-              <select class="form-select" id="Sales" aria-label="Sales">
+              <select class="form-select" id="Sales" aria-label="Sales"onchange="fetchYear()">
                 <option selected value="N">-</option>
 
               </select>
               <label for="Sales">Sales</label>
             </div>
           </div>
-          <div class="col-xxl-3 col-md-6">
+          <div class="col-xxl-2 col-md-6">
             <div class="form-floating mb-3">
-              <select class="form-select" id="channel" aria-label="Year"onchange="fetchYear()">
+              <select class="form-select" id="is_new" aria-label="is_new"onchange="fetchYear()">
+                <option selected value="0">-</option>
+                <option value="Y">NEW</option>
+                <option value="N">OLD</option>
+
+              </select>
+              <label for="is_new">ประเภทลูกค้า</label>
+            </div>
+          </div>
+          <div class="col-xxl-2 col-md-6">
+            <div class="form-floating mb-3">
+              <select class="form-select" id="channel" aria-label="channel"onchange="fetchYear()">
                 <option selected value="N">-</option>
                 <option value="I">Online</option>
                 <option value="O">Offine</option>
@@ -543,7 +554,7 @@
               <label for="channel">Channel</label>
             </div>
           </div>
-      <div class="col-xxl-3 col-md-6">
+      <div class="col-xxl-2 col-md-6">
         <div class="form-floating mb-3">
           <select class="form-select" id="month" aria-label="Month"onchange="fetchYear()">
             <option selected value="0">-</option>
@@ -563,7 +574,7 @@
           <label for="month">Month</label>
         </div>
       </div>
-      <div class="col-xxl-3 col-md-6">
+      <div class="col-xxl-2 col-md-6">
         <div class="form-floating mb-3">
           <select class="form-select" id="year" aria-label="Year"onchange="fetchYear()">
             <option value="0">-</option>
@@ -603,7 +614,7 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Appoints <span>| Today</span></h5>
+                  <h5 class="card-title">Appoint <span>| Today</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -619,6 +630,114 @@
 
               </div>
             </div><!-- End Sales Card -->
+
+<!-- Customers Card -->
+<div class="col-xxl-4 col-md-6">
+  <div class="card info-card sales-card">
+
+    <div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div>
+
+    <div class="card-body">
+      <h5 class="card-title">QT <span>| This Year</span></h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="qt_number"></h6>
+          <!--span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span-->
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+
+<!-- Revenue Card -->
+<div class="col-xxl-4 col-md-6">
+  <div class="card info-card revenue-card">
+
+    <div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div>
+
+    <div class="card-body">
+      <h5 class="card-title">Sale Order  <span>| This Month</span></h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="so_number"></h6>
+          <!--span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span-->
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- End Revenue Card -->
+
+<!-- Customers Card -->
+<div class="col-xxl-4 col-md-6">
+
+  <div class="card info-card sales-card">
+
+    <div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div>
+
+    <div class="card-body">
+      <h5 class="card-title">QT Values <span>| This Year</span></h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="qt_value"></h6>
+          <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
 
             <!-- Revenue Card -->
             <div class="col-xxl-4 col-md-6">
@@ -655,79 +774,9 @@
               </div>
             </div><!-- End Revenue Card -->
 
-            <!-- Customers Card -->
-            <div class="col-xxl-4 col-xl-12">
+            
 
-              <div class="card info-card sales-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">QT Values <span>| This Year</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-cash-stack"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>1244</h6>
-                      <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div><!-- End Customers Card -->
-
-            <!-- Customers Card -->
-            <div class="col-xxl-4 col-xl-12">
-
-              <div class="card info-card sales-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">QT <span>| This Year</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-cart"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>1244</h6>
-                      <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div><!-- End Customers Card -->
+            
 
             <!-- Reports -->
             <div class="col-12">
@@ -1115,8 +1164,8 @@
                 document.addEventListener("DOMContentLoaded", () => {
                   echarts.init(document.querySelector("#pieChart")).setOption({
                     title: {
-                      text: 'ลูกค้าแยกตามภูมิภาค',
-                      subtext: 'Fake Data',
+                      text: 'Region',
+                      subtext: 'ลูกค้าแยกตามภูมิภาค',
                       left: 'center'
                     },
                     tooltip: {
@@ -1132,24 +1181,29 @@
                       radius: '50%',
                       data: [{
                           value: 1048,
-                          name: 'Search Engine'
+                          name: 'Central'
                         },
                         {
                           value: 735,
-                          name: 'Direct'
+                          name: 'North'
                         },
                         {
                           value: 580,
-                          name: 'Email'
+                          name: 'South'
+                        },
+                        {
+                          value: 546,
+                          name: 'North East'
                         },
                         {
                           value: 484,
-                          name: 'Union Ads'
+                          name: 'East'
                         },
                         {
                           value: 300,
-                          name: 'Video Ads'
+                          name: 'West'
                         }
+                        
                       ],
                       emphasis: {
                         itemStyle: {

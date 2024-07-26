@@ -6,7 +6,7 @@ const dbOperations = require('./dbOperations');
 const app = express();
 app.use(cors());
 
-app.get('/api/sales', async (req, res) => {
+app.get('./api/sales', async (req, res) => {
     try {
         const data = await dbOperations.getLoginDetails();
         res.json(data);
@@ -16,5 +16,5 @@ app.get('/api/sales', async (req, res) => {
     }
 });
 
-const HOST = '127.0.0.1'; // specify the IP address to listen on
-app.listen( HOST, () => console.log(`Server running on http://${HOST}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

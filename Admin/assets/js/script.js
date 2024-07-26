@@ -2,9 +2,11 @@ function fetchYear() {
 const year_no = document.getElementById('year').value;
 const month_no = document.getElementById('month').value;
 const channel = document.getElementById('channel').value;
+const Sales = document.getElementById('Sales').value;
+const is_new = document.getElementById('is_new').value;
 let url;
 
-  url = `revenue.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}`;
+  url = `revenue.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}&Sales=${Sales}&is_new=${is_new}`;
 
 fetch(url)
 .then(response => {
@@ -24,12 +26,28 @@ fetch(url)
 
 function updateTable(data) {
         let totalSum = 0;
+        let uniqueso = new Set();
         data.revenueData.forEach(revenue => {
             totalSum += parseFloat(revenue.total_before_vat);
+            uniqueso.add(revenue.so_no); 
         });
 
         const revenueElement = document.getElementById('revenue');
         revenueElement.textContent = totalSum.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
+
+        
+        const countElement2 = document.getElementById('so_number');
+        countElement2.textContent = uniqueso.size; 
+
+        let totalSum1 = 0;
+        data.costsheetData.forEach(qt => {
+          totalSum1 += parseFloat(qt.amount);
+        });
+        const qtElement = document.getElementById('qt_value');
+        qtElement.textContent = totalSum1.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }); 
@@ -41,20 +59,38 @@ function updateTable(data) {
         });
 
         const countElement = document.getElementById('appoint');
-        countElement.textContent = uniqueAppointNos.size; // Display the total count of unique appoint_no
+        countElement.textContent = uniqueAppointNos.size; 
+
+        let uniqueqt = new Set();
+        data.costsheetData.forEach(qt => {
+          uniqueqt.add(qt.qt_no); 
+        });
+
+        const countElement1 = document.getElementById('qt_number');
+        countElement1.textContent = uniqueqt.size; 
+
     }
+    
+    
   
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const response = await fetch('reportchart.php');
+        const data = await response.json();
+
+        const appoints = data.APData.map(item => item.appoint_no);
+        const costsheet = data.QTData.map(item => item.qt_no);
+        const saleorder = data.SOData.map(item => item.so_no);
       new ApexCharts(document.querySelector("#reportsChart"), {
         series: [{
-          name: 'Sales',
-          data: [31, 40, 28, 51, 42, 92, 56, 60, 0, 0],
+          name: 'Appoints',
+          data: appoints,
         }, {
           name: 'Revenue',
-          data: [11, 32, 45, 32, 34, 52, 41, 51, 0, 0]
+          data: saleorder,
         }, {
-          name: 'Customers',
-          data: [15, 11, 32, 18, 9, 24, 11, 25, 0, 0]
+          name: 'Quotation',
+          data: costsheet,
         }],
         chart: {
           height: 350,
@@ -66,7 +102,7 @@ function updateTable(data) {
         markers: {
           size: 4
         },
-        colors: ['#4154f1', '#2eca6a', '#ff771d'],
+        colors: ['#ff771d', '#2eca6a','#4154f1'],
         fill: {
           type: "gradient",
           gradient: {
@@ -84,25 +120,30 @@ function updateTable(data) {
           width: 2
         },
         xaxis: {
-          type: 'datetime',
+          type: 'date',
           categories: [
-            "2024-09-19T08:00:00.000Z", 
-            "2024-09-19T09:00:00.000Z", 
-            "2024-09-19T10:00:00.000Z", 
-            "2024-09-19T11:00:00.000Z", 
-            "2024-09-19T12:00:00.000Z", 
-            "2024-09-19T13:00:00.000Z", 
-            "2024-09-19T14:00:00.000Z", 
-            "2024-09-19T15:00:00.000Z", 
-            "2024-09-19T16:00:00.000Z", 
-            "2024-09-19T17:00:00.000Z"]
+            "2024-01", 
+            "2024-02", 
+            "2024-03", 
+            "2024-04", 
+            "2024-05", 
+            "2024-06", 
+            "2024-07", 
+            "2024-08", 
+            "2024-09", 
+            "2024-10",
+            "2024-11", 
+            "2024-12"]
         },
         tooltip: {
-          x: {
-            format: 'dd/MM/yy HH:mm'
+          x: {  
+            format: 'dd/MM/yy'
           },
         }
       }).render();
+    } catch (error) {
+      console.error('Error fetching chart data:', error);
+    }
     });
 
     //*****************************pie segment chart ***************************************************//
@@ -186,17 +227,23 @@ function updateTable(data) {
     document.addEventListener('DOMContentLoaded', fetchYear);
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      fetch('http://localhost/api/sales') // Make sure the URL is correct
-          .then(response => response.json())
+      fetch('staff_id.php')
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+          })
           .then(data => {
               const selectElement = document.getElementById('Sales');
               data.forEach(item => {
                   const option = document.createElement('option');
                   option.value = item.staff_id;
-                  option.textContent = item.fname_e || item.nick_name || item.staff_id; // Choose appropriate display name
+                  option.textContent = item.fname_e || item.nick_name || item.staff_id; 
                   selectElement.appendChild(option);
               });
           })
           .catch(error => console.error('Error fetching data:', error));
   });
+  
   
