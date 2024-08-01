@@ -7,6 +7,7 @@ const is_new = document.getElementById('is_new').value;
 let url;
 
   url = `revenue.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}&Sales=${Sales}&is_new=${is_new}`;
+  
 
 fetch(url)
 .then(response => {

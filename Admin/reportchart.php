@@ -8,7 +8,13 @@ $objCon = connectDB(); // Connect to the database
 if ($objCon === false) {
     die(print_r(sqlsrv_errors(), true));
 }
-
+$currentYear = date("Y");
+$currentMonth = date("m");
+$year_no = isset($_GET['year_no']) ? $_GET['year_no'] : $currentYear;
+$month_no = isset($_GET['month_no']) ? $_GET['month_no'] : $currentMonth;
+$channel = isset($_GET['channel']) ? $_GET['channel'] : NULL;
+$Sales = isset($_GET['Sales']) ? $_GET['Sales'] : NULL;
+$is_new = isset($_GET['is_new']) ? $_GET['is_new'] : NULL;
 
 $ap = "SELECT month_no, COUNT(appoint_no) AS appoint_no
 FROM appoint_head
@@ -21,7 +27,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $APData[] = $row;
 }
 
-$qt = "SELECT MONTH(qt_date) AS month, COUNT(qt_no) AS qt_no
+$qt = "SELECT MONTH(qt_date) AS month, SUM(so_amount) AS cost_amount,COUNT(qt_no) AS qt_no
 FROM cost_sheet_head
 WHERE YEAR(qt_date) = YEAR(GETDATE()) AND is_status <> 'C'
 GROUP BY MONTH(qt_date)
