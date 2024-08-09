@@ -22,7 +22,6 @@ function connectDB()
 
     return $objCon;  // Return the connection object (or FALSE if connection fails)
 }
-
 if($objCon = connectDB())
 	{
 		//echo "Database Connected.";

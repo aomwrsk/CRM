@@ -19,10 +19,10 @@ $is_new = isset($_GET['is_new']) ? $_GET['is_new'] : NULL;
 
 
 if ($year_no <> 0 && $month_no == 0 && $channel == 'N' && $Sales == 'N' && $is_new == 0) {
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE YEAR(shipment_date) = ?";
+    $sqlappoint = "SELECT appoint_no,customer_name,province_code FROM appoint_head WHERE year_no = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ?
                    GROUP BY b.customer_segment_name";
@@ -36,12 +36,33 @@ FROM cost_sheet_head A
     WHERE 
         A.is_status <> 'C' 
         AND YEAR(A.qt_date) = ?";
+    $sqlregion = "SELECT 
+  C.customer_segment_name AS segment,
+  COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
+  COUNT(CASE WHEN B.zone_code = '02' THEN A.province_code END) AS 'Central',
+  COUNT(CASE WHEN B.zone_code = '03' THEN A.province_code END) AS 'East',
+  COUNT(CASE WHEN B.zone_code = '04' THEN A.province_code END) AS 'North-East',
+  COUNT(CASE WHEN B.zone_code = '05' THEN A.province_code END) AS 'West',
+  COUNT(CASE WHEN B.zone_code = '06' THEN A.province_code END) AS 'South'
+FROM 
+  View_SO_SUM A
+LEFT JOIN 
+  ms_province B ON A.province_code = B.province_code
+LEFT JOIN 
+  ms_customer_segment C ON A.customer_segment_code = C.customer_segment_code
+WHERE 
+  A.year_no = ?
+GROUP BY
+  C.customer_segment_name
+ORDER BY 
+  C.customer_segment_name ASC;
+";
     $params = array($year_no);
 }elseif($year_no <> 0 && $month_no <> 0 && $channel == 'N' && $Sales == 'N' && $is_new == 0){
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ?
                    GROUP BY b.customer_segment_name";
@@ -57,12 +78,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ?";
     $params = array($year_no, $month_no);
 }elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales == 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ระบบ = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ช่องทาง = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND is_call = ?
+                   WHERE a.year_no = ? AND ช่องทาง = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -79,7 +100,7 @@ FROM cost_sheet_head A
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
@@ -98,7 +119,7 @@ FROM cost_sheet_head A
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND is_new = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ?
                    GROUP BY b.customer_segment_name";
@@ -114,12 +135,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND is_new = ?";
     $params = array($year_no, $is_new);
 }elseif($year_no <> 0 && $month_no <> 0 && $channel <> 'N' && $Sales == 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ระบบ = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ช่องทาง = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND month_no = ? AND is_call = ?
+                   WHERE a.year_no = ? AND month_no = ? AND ช่องทาง = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -136,7 +157,7 @@ FROM cost_sheet_head A
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
@@ -155,7 +176,7 @@ FROM cost_sheet_head A
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND is_new = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ?
                    GROUP BY b.customer_segment_name";
@@ -171,12 +192,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND is_new = ?";
     $params = array($year_no, $month_no, $is_new);
 }elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales <> 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ระบบ = ? AND staff_id = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ช่องทาง = ? AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND is_call = ? AND staff_id = ?
+                   WHERE a.year_no = ? AND ช่องทาง = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -190,12 +211,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND sales_channels_group_code = ? AND staff_id = ?";
     $params = array($year_no, $channel, $Sales);
 }elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales == 'N' && $is_new <> 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ระบบ = ? AND is_new = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ช่องทาง = ? AND is_new = ?";
+    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND ช่องทาง = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND is_call = ?
+                   WHERE a.year_no = ? AND ช่องทาง = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -212,7 +233,7 @@ FROM cost_sheet_head A
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND staff_id = ? AND is_new = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
@@ -228,12 +249,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND staff_id = ? AND sales_channels_group_code = ?";
     $params = array($year_no, $Sales, $is_new);   
 }elseif($year_no <> 0 && $month_no <> 0 && $channel <> 'N' && $Sales <> 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ระบบ = ? AND staff_id = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ช่องทาง = ? AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND month_no = ? AND is_call = ? AND staff_id = ?
+                   WHERE a.year_no = ? AND month_no = ? AND ช่องทาง = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -247,12 +268,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND sales_channels_group_code = ? AND staff_id = ?";
     $params = array($year_no, $month_no, $channel, $Sales);
 }elseif($year_no <> 0 && $month_no <> 0 && $channel <> 'N' && $Sales == 'N' && $is_new <> 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ระบบ = ? AND is_new = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ช่องทาง = ? AND is_new = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND month_no = ? AND is_call = ?
+                   WHERE a.year_no = ? AND month_no = ? AND ช่องทาง = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -269,7 +290,7 @@ FROM cost_sheet_head A
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND staff_id = ? AND is_new = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
@@ -285,12 +306,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND staff_id = ? AND is_new = ?";
     $params = array($year_no, $month_no, $Sales, $is_new);
 }elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales <> 'N' && $is_new <> 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ระบบ = ? AND staff_id = ? AND is_new = ?";
+    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND ช่องทาง = ? AND staff_id = ? AND is_new = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND is_call = ? AND staff_id = ?
+                   WHERE a.year_no = ? AND ช่องทาง = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -304,12 +325,12 @@ FROM cost_sheet_head A
         AND YEAR(A.qt_date) = ? AND sales_channels_group_code = ? AND staff_id = ? AND is_new = ?";
     $params = array($year_no, $channel, $Sales, $is_new);
 }else{
-        $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ระบบ = ? AND staff_id = ? AND is_new = ?";
+        $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND ช่องทาง = ? AND staff_id = ? AND is_new = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ? AND staff_id = ?";
     $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM appoint_head a
+                   FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND month_no = ? AND is_call = ? AND staff_id = ?
+                   WHERE a.year_no = ? AND month_no = ? AND ช่องทาง = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
     sales_channels_group_code,
@@ -389,15 +410,33 @@ while ($row = sqlsrv_fetch_array($stmt3, SQLSRV_FETCH_ASSOC)) {
     $costsheetData[] = $row;
 }
 sqlsrv_free_stmt($stmt3);
+
+$stmt4 = sqlsrv_query($objCon, $sqlregion, $params);
+if ($stmt4 === false) {
+    // Log SQL errors if the query fails
+    $errors = sqlsrv_errors();
+    error_log(print_r($errors, true)); // Log errors for debugging purposes
+    http_response_code(500); // Set HTTP status code to 500 (Internal Server Error)
+    echo json_encode(["error" => "Failed to execute segment query"]); // Return error message as JSON
+    exit;
+}
+
+
+$regionData = [];
+while ($row = sqlsrv_fetch_array($stmt4, SQLSRV_FETCH_ASSOC)) {
+    $regionData[] = $row; // Add each row of data to the $regionData array
+}
+sqlsrv_free_stmt($stmt4);
+
 // Close the database connection
 sqlsrv_close($objCon);
-
 
 $data = [
     'revenueData' => $revenueData,
     'appointData' => $appointData,
     'segmentData' => $segmentData,
-    'costsheetData' => $costsheetData
+    'costsheetData' => $costsheetData,
+    'regionData' => $regionData
 ];
 
 header('Content-Type: application/json');
