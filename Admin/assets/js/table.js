@@ -42,7 +42,7 @@ function updateTable(data) {
     }
 
     tr.innerHTML = `
-      <td><a href= "edit-appoint.html?ap=${row.ap}" id= "${row.ap}" value ="${row.ap}" >${row.ap}</a></td>
+      <td><a href= "forms-appoint.html?ap=${row.ap}" id= "${row.ap}" value ="${row.ap}" >${row.ap}</a></td>
       <td>${row.name}</td>
       <td>${row.city}</td>
       <td>${row.date}</td>

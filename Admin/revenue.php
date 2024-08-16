@@ -411,7 +411,7 @@ while ($row = sqlsrv_fetch_array($stmt3, SQLSRV_FETCH_ASSOC)) {
 }
 sqlsrv_free_stmt($stmt3);
 
-$stmt4 = sqlsrv_query($objCon, $sqlregion, $params);
+/*$stmt4 = sqlsrv_query($objCon, $sqlregion, $params);
 if ($stmt4 === false) {
     // Log SQL errors if the query fails
     $errors = sqlsrv_errors();
@@ -426,7 +426,7 @@ $regionData = [];
 while ($row = sqlsrv_fetch_array($stmt4, SQLSRV_FETCH_ASSOC)) {
     $regionData[] = $row; // Add each row of data to the $regionData array
 }
-sqlsrv_free_stmt($stmt4);
+sqlsrv_free_stmt($stmt4);*/
 
 // Close the database connection
 sqlsrv_close($objCon);
@@ -435,8 +435,7 @@ $data = [
     'revenueData' => $revenueData,
     'appointData' => $appointData,
     'segmentData' => $segmentData,
-    'costsheetData' => $costsheetData,
-    'regionData' => $regionData
+    'costsheetData' => $costsheetData
 ];
 
 header('Content-Type: application/json');

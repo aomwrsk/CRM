@@ -20,7 +20,7 @@ fetch(url)
   console.log('Data:', data); // Log the data to check the response
   updateTable(data);
   updateChart(data.segmentData);
-  Region(data.regionData)
+
 })
 .catch(error => console.error('Error fetching data:', error));
 
@@ -44,20 +44,7 @@ function updateTable(data) {
         const countElement2 = document.getElementById('so_number');
         countElement2.textContent = uniqueso.size; 
 
-        // Calculate and display the ratio (revenue per sales order)
-const ratio = totalSum / uniqueso.size;
-const ratioElement = document.getElementById('AOV');
-ratioElement.textContent = ratio.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-});
 
-const percentage = (ratio / totalSum) * 100;
-const percentageElement = document.getElementById('AOV_percent');
-percentageElement.textContent = percentage.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-}) + ' %';
 
 
         let totalSum1 = 0;
@@ -73,11 +60,12 @@ percentageElement.textContent = percentage.toLocaleString('en-US', {
         // Process appointment data for 2024
         let uniqueAppointNos = new Set();
         data.appointData.forEach(appoint => {
-            uniqueAppointNos.add(appoint.appoint_no); // Assuming each record has an appoint_no property
+            uniqueAppointNos.add(appoint.appoint_no);
         });
-
+        
         const countElement = document.getElementById('appoint');
-        countElement.textContent = uniqueAppointNos.size; 
+        countElement.textContent = uniqueAppointNos.size;
+        
 
         let uniqueqt = new Set();
         data.costsheetData.forEach(qt => {
@@ -101,6 +89,20 @@ percentageElement.textContent = percentage.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }) + ' %';
+                // Calculate and display the ratio (revenue per sales order)
+const ratio = totalSum / uniqueso.size;
+const ratioElement = document.getElementById('AOV');
+ratioElement.textContent = ratio.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+});
+
+const percentage = (ratio / totalSum) * 100;
+const percentageElement = document.getElementById('AOV_percent');
+percentageElement.textContent = percentage.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+}) + ' %';
 
     }
     
@@ -222,50 +224,3 @@ percentageElement.textContent = percentage.toLocaleString('en-US', {
           .catch(error => console.error('Error fetching data:', error));
   });
 
-  function Region(regionData){
-    const tableBody = document.getElementById('Rtable');
-    tableBody.innerHTML = ''; // Clear any existing rows
-    
-    regionData.forEach(item => {
-        const row = document.createElement('tr');
-        
-        const segmentCell = document.createElement('td');
-        segmentCell.textContent = item.segment;
-        row.appendChild(segmentCell);
-        
-        const northCell = document.createElement('td');
-        northCell.textContent = item.North || 0;
-        row.appendChild(northCell);
-        
-        const centralCell = document.createElement('td');
-        centralCell.textContent = item.Central || 0;
-        row.appendChild(centralCell);
-        
-        const eastCell = document.createElement('td');
-        eastCell.textContent = item.East || 0;
-        row.appendChild(eastCell);
-        
-        const northeastCell = document.createElement('td');
-        northeastCell.textContent = item['North-East'] || 0;
-        row.appendChild(northeastCell);
-        
-        const westCell = document.createElement('td');
-        westCell.textContent = item.West || 0;
-        row.appendChild(westCell);
-        
-        const southCell = document.createElement('td');
-        southCell.textContent = item.South || 0;
-        row.appendChild(southCell);
-        
-        tableBody.appendChild(row);
-    });
-  }
-  // Example data for testing
-document.addEventListener('DOMContentLoaded', function() {
-  const exampleData = [
-      { segment: 'Segment 1', North: 10, Central: 15, East: 20, 'North-East': 25, West: 30, South: 35 },
-      { segment: 'Segment 2', North: 5, Central: 10, East: 15, 'North-East': 20, West: 25, South: 30 }
-  ];
-  Region(exampleData); // Populate the table with example data
-});
-  
