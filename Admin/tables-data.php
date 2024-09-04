@@ -535,7 +535,6 @@ if($staff === 0 || $level <= 1){
     <section class="section">
       <div class="row">
         <div class="col-lg-12">
-
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Datatables</h5>
@@ -543,13 +542,13 @@ if($staff === 0 || $level <= 1){
                 <div class="row">
                   <div class="col-xxl-3 col-md-4">
                     <div class="form-floating mb-3">
-                      <select class="form-select" id="Sales" aria-label="Sales"onchange="fetchData()">
+                      <select class="form-select" id="sales" aria-label="Sales"onchange="fetchData()">
                         <option selected value="N">-</option>
                       </select>
-                      <label for="Sales">Sales</label>
+                      <label for="sales">Sales</label>
                     </div>
                   </div>
-                  <div class="col-xxl-3 col-md-4">
+                  <!--div class="col-xxl-3 col-md-4">
                     <div class="form-floating mb-3">
                       <select class="form-select" id="channel" aria-label="channel"onchange="fetchData()">
                         <option selected value="N">-</option>
@@ -558,7 +557,7 @@ if($staff === 0 || $level <= 1){
                       </select>
                       <label for="channel">Channels</label>
                     </div>
-                  </div>
+                  </div-->
               <div class="col-xxl-3 col-md-6">
                 <div class="form-floating mb-3">
                   <select class="form-select" id="month" aria-label="Month"onchange="fetchData()">

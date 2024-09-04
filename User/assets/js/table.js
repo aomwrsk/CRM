@@ -1,11 +1,10 @@
 function fetchData() {
   const year_no = document.getElementById('year').value;
   const month_no = document.getElementById('month').value;
-  const channel = document.getElementById('channel').value;
-  const Sales = document.getElementById('Sales').value;
+  const staff = document.getElementById('staff').value;
   let url;
 
-  url = `api.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}&Sales=${Sales}`;
+  url = `api.php?year_no=${year_no}&month_no=${month_no}&staff=${staff}`;
  
 
     fetch(url)
@@ -75,16 +74,6 @@ function updateTable(data) {
 
     // Populate the <select> element with options
 
-   
-
-    const reasonInput = document.createElement('input');
-    reasonInput.type = 'text';
-    reasonInput.className = 'form-control';
-    reasonInput.id = `reason${index + 1}`;
-    reasonInput.name = `reason${index + 1}`;
-    reasonInput.value = row.reasoning;
-    reasonInput.disabled = row.status_code != 1 && row.status_code != 2;//
-
 
 
     optionss.forEach(optionData => {
@@ -99,15 +88,16 @@ function updateTable(data) {
       select1.appendChild(optionss);
     });
 
+
     tr.innerHTML = `
-      <td><a href= "forms-appoint.html?ap=${row.appoint_no}" id= "${row.date}" value ="${row.date}" >${row.date}</a></td>
+      <td>${row.date}</td>
       <td>${row.name}</td>
-      <td>${row.qt_no}</td>
+      <td><input type="text" class="form-control" id="qt_no${index + 1}"name="qt_no${index + 1}"value="${row.qt_no}" readonly></td>
        <td>${row.so_amount}</td>
       <td>${select1.outerHTML}</td>
-      <td><input type="text" class="form-control" id="remark${row.appoint_no}${index + 1}"name="${row.appoint_no}"value="${row.remark}"</td>
+      <td><input type="text" class="form-control" id="remark${index + 1}"name="remark${index + 1}"value="${row.remark}"></td>
       <td>${select.outerHTML}</td>
-      <td>${reasonInput.outerHTML}</td>
+      <td><input type="text" class="form-control" id="reason${index + 1}"name="reason${index + 1}"value="${row.reasoning}"></td>
     `;
 
     tbody.appendChild(tr);
@@ -146,7 +136,7 @@ function getBadgeClass(status1) {
 
 document.addEventListener('DOMContentLoaded', fetchData);
 
-document.addEventListener('DOMContentLoaded', (event) => {
+/*document.addEventListener('DOMContentLoaded', (event) => {
   fetch('staff_id.php')
       .then(response => {
           if (!response.ok) {
@@ -164,7 +154,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
           });
       })
       .catch(error => console.error('Error fetching data:', error));
-});
+});*/
 const monthSelect = document.getElementById('month');
 const monthNames = [
   "January", "February", "March", "April", "May", "June", 
@@ -191,4 +181,8 @@ for (let year = currentYear; year >= startYear; year--) {
   option.value = year;
   option.text = year;
   yearSelect.appendChild(option);
+}
+
+function confirmUpdate() {
+  return confirm("Are you sure you want to update the records?");
 }

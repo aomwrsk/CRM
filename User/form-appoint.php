@@ -8,7 +8,6 @@ $objCon = connectDB(); // Connect to the database
 if ($objCon === false) {
     die(print_r(sqlsrv_errors(), true));
 }
-
 $sql = "SELECT A.staff_id, B.fname_e, B.nick_name 
             FROM xuser AS A
             LEFT JOIN hr_staff B ON A.staff_id = B.staff_id
@@ -23,6 +22,7 @@ $sales_data = array();
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $sales_data[] = $row;
 }
+
 
 $sqlchannel = "SELECT sales_channels_group_code, sales_channels_group_name
             FROM ms_sales_channels_group

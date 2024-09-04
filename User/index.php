@@ -220,6 +220,7 @@ if($staff === 0 || $level < 1){
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="assets/img/person-circle.svg" alt="Profile" class="rounded-circle">
             <span class="d-none d-md-block dropdown-toggle ps-2"> <?php echo $name; ?></span>
+            <input type="hidden" id="staff" value="<?php echo $staff; ?>">
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -227,7 +228,7 @@ if($staff === 0 || $level < 1){
               <h6>Kevin Anderson</h6>
               <span>Web Designer</span>
             </li-->
-            <li>
+            <!--li>
               <hr class="dropdown-divider">
             </li>
 
@@ -256,7 +257,7 @@ if($staff === 0 || $level < 1){
                 <i class="bi bi-question-circle"></i>
                 <span>Need Help?</span>
               </a>
-            </li>
+            </li-->
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -288,7 +289,7 @@ if($staff === 0 || $level < 1){
         </a>
       </li>
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-menu-button-wide"></i><span>Components</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -364,24 +365,24 @@ if($staff === 0 || $level < 1){
             </a>
           </li>
         </ul>
-      </li>
+      </li-->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
+          <!--li>
             <a href="forms-elements.html">
               <i class="bi bi-circle"></i><span>Form Elements</span>
             </a>
-          </li>
+          </li-->
           <li>
             <a href="forms-appoint.php">
               <i class="bi bi-circle"></i><span>Form Appoint</span>
             </a>
           </li>
-          <li>
+          <!--li>
             <a href="forms-editors.html">
               <i class="bi bi-circle"></i><span>Form Editors</span>
             </a>
@@ -390,7 +391,7 @@ if($staff === 0 || $level < 1){
             <a href="forms-validation.html">
               <i class="bi bi-circle"></i><span>Form Validation</span>
             </a>
-          </li>
+          </li-->
         </ul>
       </li>
 
@@ -399,25 +400,25 @@ if($staff === 0 || $level < 1){
           <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-          <li>
+          <!--li>
             <a href="tables-general.html">
               <i class="bi bi-circle"></i><span>General Tables</span>
             </a>
-          </li>
+          </li-->
           <li>
             <a href="tables-data.php">
-              <i class="bi bi-circle"></i><span>Data Appoint</span>
+              <i class="bi bi-circle"></i><span>Update Status</span>
             </a>
           </li>
-          <li>
+          <!--li>
             <a href="tables-CS.html">
               <i class="bi bi-circle"></i><span>Data Cost sheet</span>
             </a>
-          </li>
+          </li-->
         </ul>
       </li>
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -512,7 +513,7 @@ if($staff === 0 || $level < 1){
           <i class="bi bi-calendar-day"></i>
           <span>Blank</span>
         </a>
-      </li>
+      </li-->
 
     </ul>
 
@@ -524,7 +525,7 @@ if($staff === 0 || $level < 1){
       <h1>Dashboard</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
           <li class="breadcrumb-item active">Dashboard</li>
         </ol>
         
@@ -713,7 +714,7 @@ if($staff === 0 || $level < 1){
     <div class="card-body">
       <h5 class="card-title">Region</h5>
 
-      <table class="table table-borderless datatable">
+      <table id="region" class="table table-borderless datatable">
         <thead>
           <tr>
             <th scope="col">Segment</th>
@@ -725,7 +726,7 @@ if($staff === 0 || $level < 1){
             <th scope="col">South</th>
           </tr>
         </thead>
-        <tbody id="Rtable">
+        <tbody>
          
         </tbody>
       </table>
@@ -734,7 +735,7 @@ if($staff === 0 || $level < 1){
 
   </div>
 </div><!-- End Recent Sales -->
-            <!-- Recent Sales -->
+            <!-- Recent Sales>
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
 
@@ -754,7 +755,7 @@ if($staff === 0 || $level < 1){
                 <div class="card-body">
                   <h5 class="card-title">Recent Sales </h5>
 
-                  <table class="table table-borderless datatable">
+                  <table  class="table table-borderless datatable">
                     <thead>
                       <tr>
                         <th scope="col">#</th>
@@ -806,7 +807,7 @@ if($staff === 0 || $level < 1){
                 </div>
 
               </div>
-            </div><!-- End Recent Sales -->
+            </div><End Recent Sales -->
 
           </div>
         </div><!-- End Left side columns -->

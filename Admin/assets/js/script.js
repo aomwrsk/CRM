@@ -57,14 +57,13 @@ function updateTable(data) {
             maximumFractionDigits: 2
         }); 
 
-        // Process appointment data for 2024
-        let uniqueAppointNos = new Set();
-        data.appointData.forEach(appoint => {
-            uniqueAppointNos.add(appoint.appoint_no);
+       
+        let uniqueap = new Set();
+        data.appointData.forEach(ap => {
+          uniqueap.add(ap.appoint_no); 
         });
-        
         const countElement = document.getElementById('appoint');
-        countElement.textContent = uniqueAppointNos.size;
+        countElement.textContent = uniqueap.size;
         
 
         let uniqueqt = new Set();
@@ -83,27 +82,44 @@ function updateTable(data) {
             maximumFractionDigits: 0
         });
 
-        const winrateP = (uniqueso.size / uniqueqt.size) * 100;
+        const winrateP = (uniqueso.size / uniqueqt.size) * 100 || 0;
         const winratePElement = document.getElementById('winrate_percent');
         winratePElement.textContent = winrateP.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }) + ' %';
                 // Calculate and display the ratio (revenue per sales order)
-const ratio = totalSum / uniqueso.size;
+const ratio = totalSum / uniqueso.size || 0;
 const ratioElement = document.getElementById('AOV');
 ratioElement.textContent = ratio.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
 });
 
-const percentage = (ratio / totalSum) * 100;
+const percentage = (ratio / totalSum) * 100 || 0;
 const percentageElement = document.getElementById('AOV_percent');
 percentageElement.textContent = percentage.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
 }) + ' %';
+const tbody = document.querySelector('#region tbody');
+  tbody.innerHTML = '';
 
+  data.regionData.forEach((row, index) => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${row.segment}</td>
+      <td>${row.North}</td>
+      <td>${row.Central}</td>
+       <td>${row.East}</td>
+      <td>${row.North_East}</td>
+      <td>${row.West}</td>
+     <td>${row.South}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
     }
     
     

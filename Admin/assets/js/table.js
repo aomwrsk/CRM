@@ -1,11 +1,11 @@
 function fetchData() {
   const year_no = document.getElementById('year').value;
   const month_no = document.getElementById('month').value;
-  const channel = document.getElementById('channel').value;
-  const Sales = document.getElementById('Sales').value;
+  /*const channel = document.getElementById('channel').value;*/
+  const Sales = document.getElementById('sales').value;
   let url;
 
-  url = `api.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}&Sales=${Sales}`;
+  url = `api.php?year_no=${year_no}&month_no=${month_no}&Sales=${Sales}`;
  
 
     fetch(url)
@@ -75,18 +75,6 @@ function updateTable(data) {
 
     // Populate the <select> element with options
 
-   
-
-    const reasonInput = document.createElement('input');
-    reasonInput.type = 'text';
-    reasonInput.className = 'form-control';
-    reasonInput.id = `reason${index + 1}`;
-    reasonInput.name = `reason${index + 1}`;
-    reasonInput.value = row.reasoning;
-    reasonInput.disabled = row.status_code != 1 && row.status_code != 2;//
-
-
-
     optionss.forEach(optionData => {
       const optionss = document.createElement('option');
       optionss.value = optionData.value;
@@ -100,14 +88,14 @@ function updateTable(data) {
     });
 
     tr.innerHTML = `
-      <td><a href= "forms-appoint.html?ap=${row.appoint_no}" id= "${row.date}" value ="${row.date}" >${row.date}</a></td>
+      <td>${row.date}</td>
       <td>${row.name}</td>
       <td>${row.qt_no}</td>
        <td>${row.so_amount}</td>
       <td>${select1.outerHTML}</td>
       <td><input type="text" class="form-control" id="remark${row.appoint_no}${index + 1}"name="${row.appoint_no}"value="${row.remark}"</td>
       <td>${select.outerHTML}</td>
-      <td>${reasonInput.outerHTML}</td>
+      <td><input type="text" class="form-control" id="reason${index + 1}"name="reason${index + 1}"value="${row.reasoning}"></td>
     `;
 
     tbody.appendChild(tr);
@@ -155,7 +143,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
           return response.json();
       })
       .then(data => {
-          const selectElement = document.getElementById('Sales');
+          const selectElement = document.getElementById('sales');
           data.forEach(item => {
               const option = document.createElement('option');
               option.value = item.staff_id;

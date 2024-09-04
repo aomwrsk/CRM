@@ -713,7 +713,7 @@ if($staff === 0 || $level <= 1){
     <div class="card-body">
       <h5 class="card-title">Region</h5>
 
-      <table class="table table-borderless datatable">
+      <table id="region" class="table table-borderless datatable">
         <thead>
           <tr>
             <th scope="col">Segment</th>
@@ -725,7 +725,7 @@ if($staff === 0 || $level <= 1){
             <th scope="col">South</th>
           </tr>
         </thead>
-        <tbody id="Rtable">
+        <tbody>
          
         </tbody>
       </table>
@@ -734,7 +734,7 @@ if($staff === 0 || $level <= 1){
 
   </div>
 </div><!-- End Recent Sales -->
-            <!-- Recent Sales -->
+            <!-- Recent Sales>
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
 
@@ -754,7 +754,7 @@ if($staff === 0 || $level <= 1){
                 <div class="card-body">
                   <h5 class="card-title">Recent Sales </h5>
 
-                  <table class="table table-borderless datatable">
+                  <table  class="table table-borderless datatable">
                     <thead>
                       <tr>
                         <th scope="col">#</th>
@@ -806,7 +806,7 @@ if($staff === 0 || $level <= 1){
                 </div>
 
               </div>
-            </div><!-- End Recent Sales -->
+            </div><End Recent Sales -->
 
           </div>
         </div><!-- End Left side columns -->

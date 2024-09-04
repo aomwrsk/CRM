@@ -2,7 +2,7 @@
 $name = htmlspecialchars($name);
 $staff = htmlspecialchars($staff);
 $level = htmlspecialchars($level);
-if($staff === 0 || $level <= 1){
+if($staff === 0 || $level < 1){
   echo '<script>alert("Can not enter this site");window.location="/CRM/pages-login.html";</script>';
 }
 ?>
@@ -303,7 +303,7 @@ if($staff === 0 || $level <= 1){
         </a>
       </li><!-- End Dashboard Nav -->
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-menu-button-wide"></i><span>Components</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -379,24 +379,24 @@ if($staff === 0 || $level <= 1){
             </a>
           </li>
         </ul>
-      </li><!-- End Components Nav -->
+      </li--><!-- End Components Nav -->
 
       <li class="nav-item">
-        <a class="nav-link " data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <li>
+          <!--li>
             <a href="forms-elements.html">
               <i class="bi bi-circle"></i><span>Form Elements</span>
             </a>
-          </li>
+          </li-->
           <li>
-            <a href="forms-appoint.html" class="active">
+            <a href="forms-appoint.php" class="active">
               <i class="bi bi-circle"></i><span>Form Appoint</span>
             </a>
           </li>
-          <li>
+          <!--li>
             <a href="forms-editors.html">
               <i class="bi bi-circle"></i><span>Form Editors</span>
             </a>
@@ -405,29 +405,33 @@ if($staff === 0 || $level <= 1){
             <a href="forms-validation.html">
               <i class="bi bi-circle"></i><span>Form Validation</span>
             </a>
-          </li>
+          </li-->
         </ul>
-      </li><!-- End Forms Nav -->
+      </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
+        <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <!--li>
             <a href="tables-general.html">
               <i class="bi bi-circle"></i><span>General Tables</span>
             </a>
-          </li>
+          </li-->
           <li>
-            <a href="tables-data.html">
-              <i class="bi bi-circle"></i><span>Data Tables</span>
+            <a href="tables-data.php">
+              <i class="bi bi-circle"></i><span>Update Status</span>
             </a>
           </li>
+          <!--li>
+            <a href="tables-CS.html">
+              <i class="bi bi-circle"></i><span>Data Cost sheet</span>
+            </a>
+          </li-->
         </ul>
       </li><!-- End Tables Nav -->
-
-      <li class="nav-item">
+     <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -448,9 +452,9 @@ if($staff === 0 || $level <= 1){
             </a>
           </li>
         </ul>
-      </li><!-- End Charts Nav -->
+      </li--><!-- End Charts Nav -->
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-gem"></i><span>Icons</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -471,58 +475,58 @@ if($staff === 0 || $level <= 1){
             </a>
           </li>
         </ul>
-      </li><!-- End Icons Nav -->
+      </li--><!-- End Icons Nav -->
 
-      <li class="nav-heading">Pages</li>
+      <!--li class="nav-heading">Pages</li>
 
-<li class="nav-item">
-  <a class="nav-link collapsed" href="users-profile.html">
-    <i class="bi bi-person"></i>
-    <span>Profile</span>
-  </a>
-</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="users-profile.html">
+          <i class="bi bi-person"></i>
+          <span>Profile</span>
+        </a>
+      </li>
 
-<li class="nav-item">
-  <a class="nav-link collapsed" href="permission.php">
-    <i class="bi bi-question-circle"></i>
-    <span>Permission</span>
-  </a>
-</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="pages-faq.html">
+          <i class="bi bi-question-circle"></i>
+          <span>F.A.Q</span>
+        </a>
+      </li>
 
-<li class="nav-item">
-  <a class="nav-link collapsed" href="pages-contact.html">
-    <i class="bi bi-envelope"></i>
-    <span>Contact</span>
-  </a>
-</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="pages-contact.html">
+          <i class="bi bi-envelope"></i>
+          <span>Contact</span>
+        </a>
+      </li>
 
-<li class="nav-item">
-  <a class="nav-link collapsed" href="pages-register.html">
-    <i class="bi bi-card-list"></i>
-    <span>Register</span>
-  </a>
-</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="pages-register.html">
+          <i class="bi bi-card-list"></i>
+          <span>Register</span>
+        </a>
+      </li>
 
-<li class="nav-item">
-  <a class="nav-link collapsed" href="pages-login.html">
-    <i class="bi bi-box-arrow-in-right"></i>
-    <span>Login</span>
-  </a>
-</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="pages-login.html">
+          <i class="bi bi-box-arrow-in-right"></i>
+          <span>Login</span>
+        </a>
+      </li>
 
-<li class="nav-item">
-  <a class="nav-link collapsed" href="pages-error-404.html">
-    <i class="bi bi-dash-circle"></i>
-    <span>Error 404</span>
-  </a>
-</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="pages-error-404.html">
+          <i class="bi bi-dash-circle"></i>
+          <span>Error 404</span>
+        </a>
+      </li>
 
-<li class="nav-item">
-  <a class="nav-link collapsed" href="pages-blank.html">
-    <i class="bi bi-calendar-day"></i>
-    <span>Blank</span>
-  </a>
-</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="pages-blank.html">
+          <i class="bi bi-file-earmark"></i>
+          <span>Blank</span>
+        </a>
+      </li-->
 
     </ul>
 
@@ -612,7 +616,7 @@ if($staff === 0 || $level <= 1){
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Form Appoint</h5>
-
+              <input type="hidden" id="staff" name="staff" value="<?php echo $staff;?>">
               <!-- Multi Columns Form -->
               <form action="create-appoint.php" method="post" enctype="multipart/form-data" class="row g-3">
                 <div class="col-md-2">
@@ -638,8 +642,46 @@ if($staff === 0 || $level <= 1){
                   <input type="text" class="form-control" id="inputSearch" name="inputSearch">
                 </div>
                 <div class="col-md-2">
-                  <label for="inputAP-No" class="form-label">เลข AP</label>
+                <label for="inputAP-No" class="form-label" onclick="showPopup()">เลข AP</label>
                   <input type="text" class="form-control" id="inputAP-No" name="inputAP_No">
+                  <div id="popupModal" class="modal">
+                    
+                    <div class="modal-content">
+                      
+                    <span class="close" onclick="closePopup()">&times;</span>
+                    <div class="row">
+                    <div class="col-xxl-2 col-md-4">
+        <div class="form-floating mb-3">
+          <select class="form-select" id="month" aria-label="Month"onchange="fetchData()">
+            <option value="0">-</option>
+          </select>
+          <label for="month">Month</label>
+        </div>
+      </div>
+      <div class="col-xxl-2 col-md-4">
+        <div class="form-floating mb-3">
+          <select class="form-select" id="year" aria-label="Year"onchange="fetchData()">
+          </select>
+          <label for="year">Year</label>
+        </div>
+      </div>
+      </div>
+                    <table id="dataTable">
+                      <!-- Your table structure here -->
+                    <thead>
+                    <tr>
+                    <th>Appoint No</th>
+                    <th>วันที่</th>
+                    <th>sales</th>
+                    <th>ชื่อลูกค้า</th>
+                    </tr>
+                    </thead>
+                   <tbody id="dataTableBody">
+                <!-- Table rows will be populated dynamically -->
+                   </tbody>
+                  </table>
+                  </div>
+                  </div>
                 </div>
                 <div class="col-md-2">
                   <label for="inputFac_no" class="form-label">ทะเบียนโรงงาน</label>
@@ -704,9 +746,7 @@ if($staff === 0 || $level <= 1){
                 </div>
                 <div class="col-md-2">
                   <label for="inputSales" class="form-label">พนักงานขาย</label>
-                  <select class="form-select" id="inputSales" aria-label="inputSales" name="inputSales">
-                    <option selected value="">N/A</option>  
-                  </select>
+                  <input class="form-control" id="inputSales" aria-label="inputSales" name="inputSales" value="<?php echo $staff;?>" readonly>
                 </div>
                 <div class="col-md-2">
                   <label for="inputAppoint" class="form-label">การนัดหมาย</label>
@@ -940,6 +980,7 @@ if($staff === 0 || $level <= 1){
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
   <script src="assets/js/script_form-appoint.js"></script>
+  <script src="assets/js/script_edit-appoint.js"></script>
 </body>
 
 </html>

@@ -8,98 +8,89 @@
               return response.json();
           })
           .then(data => {
-              const selectElement = document.getElementById('inputSales');
-              const selectElement1 = document.getElementById('inputChannel');
-              const selectElement2 = document.getElementById('inputSocial');
-              const selectElement3 = document.getElementById('inputContract');
-              const selectElement4 = document.getElementById('inputFac-nation');
-              const selectElement5 = document.getElementById('inputProvince');
-              const selectElement6 = document.getElementById('inputSegment');
-              const selectElement7 = document.getElementById('inputCL_type');
-              const selectElement8 = document.getElementById('inputAppoint');
-              const selectElement9 = document.getElementById('inputCus_status');
-              const selectElement10 = document.getElementById('inputis_status');
-              data.sales_data.forEach(item => {
-                  const option = document.createElement('option');
-                  option.value = item.staff_id;
-                  option.textContent = item.fname_e || item.nick_name || item.staff_id; 
-                  selectElement.appendChild(option);
-              });
-              data.channel.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.sales_channels_group_code;
-                option.textContent = item.sales_channels_group_name; 
-                selectElement1.appendChild(option);
-            });
-            data.search.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.sales_channels_search_code;
-                option.textContent = item.sales_channels_search_name; 
-                selectElement2.appendChild(option);
-            });
-            data.contact.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.sales_channels_code;
-                option.textContent = item.sales_channels_name; 
-                selectElement3.appendChild(option);
-            });
-            data.nationality.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.nationality_code;
-                option.textContent = item.nationality_name; 
-                selectElement4.appendChild(option);
-            });
-            data.province.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.province_code;
-                option.textContent = item.province_name; 
-                selectElement5.appendChild(option);
-            });
-            data.segment.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.customer_segment_code;
-                option.textContent = item.customer_segment_name; 
-                selectElement6.appendChild(option);
-            });
-            data.CL.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.cleaning_type_code;
-                option.textContent = item.cleaning_type_name; 
-                selectElement7.appendChild(option);
-            });
-              // Get the selected value of the inputSegment dropdown
-            const customerSegmentCode = selectElement6.value;
+            const selectElements = {
+                sales: document.getElementById('inputSales'),
+                channel: document.getElementById('inputChannel'),
+                social: document.getElementById('inputSocial'),
+                contract: document.getElementById('inputContract'),
+                nationality: document.getElementById('inputFac-nation'),
+                province: document.getElementById('inputProvince'),
+                segment: document.getElementById('inputSegment'),
+                clType: document.getElementById('inputCL_type'),
+                appoint: document.getElementById('inputAppoint'),
+                cusStatus: document.getElementById('inputCus_status'),
+                isStatus: document.getElementById('inputis_status')
+            };
 
-            // Disable selectElement7 if customerSegmentCode is not '04' or '05'
-            if (customerSegmentCode !== '04' || customerSegmentCode !== '05') {
-                selectElement7.disabled = true;
+            data.sales_data.forEach(item => createOption(selectElements.sales, item.staff_id, item.fname_e || item.nick_name || item.staff_id));
+            data.channel.forEach(item => createOption(selectElements.channel, item.sales_channels_group_code, item.sales_channels_group_name));
+            data.search.forEach(item => createOption(selectElements.social, item.sales_channels_search_code, item.sales_channels_search_name));
+            data.contact.forEach(item => createOption(selectElements.contract, item.sales_channels_code, item.sales_channels_name));
+            data.nationality.forEach(item => createOption(selectElements.nationality, item.nationality_code, item.nationality_name));
+            data.province.forEach(item => createOption(selectElements.province, item.province_code, item.province_name));
+            data.segment.forEach(item => createOption(selectElements.segment, item.customer_segment_code, item.customer_segment_name));
+            data.CL.forEach(item => createOption(selectElements.clType, item.cleaning_type_code, item.cleaning_type_name));
+            data.is_appoint.forEach(item => createOption(selectElements.appoint, item.is_appoint_code, item.is_appoint_name));
+            data.is_prospect.forEach(item => createOption(selectElements.cusStatus, item.prospect_code, item.prospect_name));
+            data.appoint_status.forEach(item => createOption(selectElements.isStatus, item.status_code, item.status_name));
+
+            function createOption(select, value, text) {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = text;
+                select.appendChild(option);
             }
-
-            // Listen for changes in the inputSegment dropdown to dynamically enable/disable selectElement7
-            selectElement6.addEventListener('change', () => {
-                const updatedSegmentCode = selectElement6.value;
-                selectElement7.disabled = updatedSegmentCode !== '04' && updatedSegmentCode !== '05';
-            });
-            data.is_appoint.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.is_appoint_code;
-                option.textContent = item.is_appoint_name; 
-                selectElement8.appendChild(option);
-            });
-            data.is_prospect.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.prospect_code;
-                option.textContent = item.prospect_name; 
-                selectElement9.appendChild(option);
-            });
-            data.appoint_status.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.status_code;
-                option.textContent = item.status_name; 
-                selectElement10.appendChild(option);
-            });
+              // Get the selected value of the inputSegment dropdown
+              const customerSegmentCode = selectElements.segment.value;
+              selectElements.clType.disabled = customerSegmentCode !== '04' && customerSegmentCode !== '05';
+              selectElements.segment.addEventListener('change', () => {
+                  const updatedSegmentCode = selectElements.segment.value;
+                  selectElements.clType.disabled = updatedSegmentCode !== '04' && updatedSegmentCode !== '05';
+              });
+              window.APData = data.ap_data;
           })
           .catch(error => console.error('Error fetching data:', error));
+
+          
   });
 
+  function showPopup() {
+    // Show the pop-up modal
+    document.getElementById('popupModal').style.display = 'block';
+  
+    // Fetch and populate data into the table (this is a placeholder, replace with actual data fetching logic)
+    const tableBody = document.getElementById('dataTableBody');
+    tableBody.innerHTML = ''; // Clear previous data
+    const APData = window.APData;
+  
+  
+    if (APData) {
+        APData.forEach(item => {
+            const row = document.createElement('tr');
+
+            // Create cells for the data you want to display
+            const cell1 = document.createElement('td');
+            const cell2 = document.createElement('td');
+            const cell3 = document.createElement('td');
+            const cell4 = document.createElement('td');
+
+            // Assuming each item in salesData has properties `staff_id` and `fname_e`
+            cell1.textContent = item.appoint_no; // Replace with appropriate property
+            cell2.textContent = item.appoint_date
+            cell3.textContent = item.SName;
+            cell4.textContent = item.customer_name; // Replace with appropriate property
+
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            row.appendChild(cell3);
+            row.appendChild(cell4);
+
+            tableBody.appendChild(row);
+        });
+    }
+}
+  function closePopup() {
+    // Hide the pop-up modal
+    document.getElementById('popupModal').style.display = 'none';
+  }
 

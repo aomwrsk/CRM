@@ -1,12 +1,12 @@
 function fetchYear() {
 const year_no = document.getElementById('year').value;
 const month_no = document.getElementById('month').value;
-const channel = document.getElementById('channel').value;
-const Sales = document.getElementById('Sales').value;
+/*const channel = document.getElementById('channel').value;*/
+const staff = document.getElementById('staff').value;
 const is_new = document.getElementById('is_new').value;
 let url;
 
-  url = `revenue.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}&Sales=${Sales}&is_new=${is_new}`;
+  url = `revenue.php?year_no=${year_no}&month_no=${month_no}&is_new=${is_new}&staff=${staff}`;
   
 
 fetch(url)
@@ -104,6 +104,24 @@ percentageElement.textContent = percentage.toLocaleString('en-US', {
     maximumFractionDigits: 2
 }) + ' %';
 
+const tbody = document.querySelector('#region tbody');
+  tbody.innerHTML = '';
+
+  data.regionData.forEach((row, index) => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${row.segment}</td>
+      <td>${row.North}</td>
+      <td>${row.Central}</td>
+       <td>${row.East}</td>
+      <td>${row.North_East}</td>
+      <td>${row.West}</td>
+     <td>${row.South}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
     }
     
     
@@ -204,7 +222,7 @@ percentageElement.textContent = percentage.toLocaleString('en-US', {
     }*/
     document.addEventListener('DOMContentLoaded', fetchYear);
 
-    document.addEventListener('DOMContentLoaded', (event) => {
+  /*  document.addEventListener('DOMContentLoaded', (event) => {
       fetch('staff_id.php')
           .then(response => {
               if (!response.ok) {
@@ -222,7 +240,7 @@ percentageElement.textContent = percentage.toLocaleString('en-US', {
               });
           })
           .catch(error => console.error('Error fetching data:', error));
-  });
+  });*/
 
   const monthSelect = document.getElementById('month');
   const monthNames = [
@@ -251,3 +269,5 @@ for (let year = currentYear; year >= startYear; year--) {
   option.text = year;
   yearSelect.appendChild(option);
 }
+
+
