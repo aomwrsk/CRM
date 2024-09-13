@@ -70,7 +70,7 @@ function updateReport(report) {
     },
     tooltip: {
       x: {  
-        format: 'MM/yyyy'
+        format: 'dd/MM/yyyy'
       },
     }
   }).render();

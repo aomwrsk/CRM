@@ -392,13 +392,13 @@ if($staff === 0 || $level <= 1){
             </a>
           </li>
           <li>
-            <a href="forms-appoint.html" class="active">
-              <i class="bi bi-circle"></i><span>Form Appoint</span>
+            <a href="forms-appoint.php" class="active">
+              <i class="bi bi-circle"></i><span>บันทึกข้อมูลลูกค้า</span>
             </a>
           </li>
           <li>
-            <a href="forms-editors.html">
-              <i class="bi bi-circle"></i><span>Form Editors</span>
+          <a href="forms-order.php">
+              <i class="bi bi-circle"></i><span>บันทึก Order</span>
             </a>
           </li>
           <li>

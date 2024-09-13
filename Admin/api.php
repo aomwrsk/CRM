@@ -21,7 +21,8 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
                    FROM cost_sheet_head A
                    LEFT JOIN ms_appoint_status ms ON a.is_tracking = ms.status_code
 				   LEFT JOIN ms_prospect pp ON a.is_prospect = pp.prospect_code
-                   WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ?
+                   LEFT JOIN  so_customer_status B ON A.qt_no = B.qt_no
+                   WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND is_status <> 'C'  AND B.so_no IS NULL
                    ORDER BY qt_date DESC";
                    $params = array($month_no, $year_no);
 }else{
@@ -29,7 +30,8 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
                    FROM cost_sheet_head A
                    LEFT JOIN ms_appoint_status ms ON a.is_tracking = ms.status_code
 				   LEFT JOIN ms_prospect pp ON a.is_prospect = pp.prospect_code
-                   WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND A.staff_id = ? 
+                   LEFT JOIN  so_customer_status B ON A.qt_no = B.qt_no
+                   WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND A.staff_id = ?  AND is_status <> 'C'  AND B.so_no IS NULL
                    ORDER BY qt_date DESC";
                    $params = array($month_no, $year_no, $Sales);
 }

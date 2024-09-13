@@ -2,16 +2,8 @@
 $name = htmlspecialchars($name);
 $staff = htmlspecialchars($staff);
 $level = htmlspecialchars($level);
-$role = htmlspecialchars($role);
-if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
-  echo '<script>
-  alert("Cannot enter this page");
-  if (document.referrer) {
-      window.location = document.referrer; // Redirect to the previous page
-  } else {
-      window.location = "/CRM/pages-login.html"; // Fallback in case referrer is not available
-  }
-</script>';
+if($staff === 0 || $level <= 1){
+  echo '<script>alert("Can not enter this site");window.location="/CRM/pages-login.html";</script>';
 }
 ?>
 <!DOCTYPE html>
@@ -21,7 +13,7 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Permission - CRM</title>
+  <title>Forms Appoint</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -52,6 +44,20 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  <script>
+    // Function to set the current date in YYYY-MM-DD format
+    function setCurrentDate() {
+        const inputDate = document.getElementById('inputDate');
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(today.getDate()).padStart(2, '0');
+        inputDate.value = `${day}/${month}/${year}`;
+    }
+
+    // Set the current date on page load
+    window.onload = setCurrentDate;
+</script>
 </head>
 
 <body>
@@ -295,7 +301,7 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
-      </li>
+      </li><!-- End Dashboard Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
@@ -373,26 +379,26 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
             </a>
           </li>
         </ul>
-      </li>
+      </li><!-- End Components Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link " data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
           <li>
             <a href="forms-elements.html">
               <i class="bi bi-circle"></i><span>Form Elements</span>
             </a>
           </li>
           <li>
-            <a href="forms-appoint.php">
-              <i class="bi bi-circle"></i><span>Form Appoint</span>
+          <a href="forms-appoint.php">
+              <i class="bi bi-circle"></i><span>บันทึกข้อมูลลูกค้า</span>
             </a>
           </li>
           <li>
-            <a href="forms-editors.html">
-              <i class="bi bi-circle"></i><span>Form Editors</span>
+            <a href="forms-order.php" class="active">
+              <i class="bi bi-circle"></i><span>บันทึก Order</span>
             </a>
           </li>
           <li>
@@ -401,30 +407,25 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
             </a>
           </li>
         </ul>
-      </li>
+      </li><!-- End Forms Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="tables-general.html">
               <i class="bi bi-circle"></i><span>General Tables</span>
             </a>
           </li>
           <li>
-            <a href="tables-data.php">
-              <i class="bi bi-circle"></i><span>Data Appoint</span>
-            </a>
-          </li>
-          <li>
-            <a href="tables-CS.html">
-              <i class="bi bi-circle"></i><span>Data Cost sheet</span>
+            <a href="tables-data.html">
+              <i class="bi bi-circle"></i><span>Data Tables</span>
             </a>
           </li>
         </ul>
-      </li>
+      </li><!-- End Tables Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
@@ -447,7 +448,7 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
             </a>
           </li>
         </ul>
-      </li>
+      </li><!-- End Charts Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
@@ -470,58 +471,58 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
             </a>
           </li>
         </ul>
-      </li>
+      </li><!-- End Icons Nav -->
 
       <li class="nav-heading">Pages</li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="users-profile.html">
-          <i class="bi bi-person"></i>
-          <span>Profile</span>
-        </a>
-      </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="users-profile.html">
+    <i class="bi bi-person"></i>
+    <span>Profile</span>
+  </a>
+</li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="permission.php">
-          <i class="bi bi-question-circle"></i>
-          <span>Permission</span>
-        </a>
-      </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="permission.php">
+    <i class="bi bi-question-circle"></i>
+    <span>Permission</span>
+  </a>
+</li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-contact.html">
-          <i class="bi bi-envelope"></i>
-          <span>Contact</span>
-        </a>
-      </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="pages-contact.html">
+    <i class="bi bi-envelope"></i>
+    <span>Contact</span>
+  </a>
+</li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-register.html">
-          <i class="bi bi-card-list"></i>
-          <span>Register</span>
-        </a>
-      </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="pages-register.html">
+    <i class="bi bi-card-list"></i>
+    <span>Register</span>
+  </a>
+</li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-login.html">
-          <i class="bi bi-box-arrow-in-right"></i>
-          <span>Login</span>
-        </a>
-      </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="pages-login.html">
+    <i class="bi bi-box-arrow-in-right"></i>
+    <span>Login</span>
+  </a>
+</li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-error-404.html">
-          <i class="bi bi-dash-circle"></i>
-          <span>Error 404</span>
-        </a>
-      </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="pages-error-404.html">
+    <i class="bi bi-dash-circle"></i>
+    <span>Error 404</span>
+  </a>
+</li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-blank.html">
-          <i class="bi bi-calendar-day"></i>
-          <span>Blank</span>
-        </a>
-      </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="pages-blank.html">
+    <i class="bi bi-calendar-day"></i>
+    <span>Blank</span>
+  </a>
+</li>
 
     </ul>
 
@@ -530,11 +531,12 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>PERMISSION</h1>
+      <h1>บันทึก Order</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Permission</li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">บันทึก Order</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -609,30 +611,239 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Bordered Table</h5>
-              <p>Add <code>.table-bordered</code> for borders on all sides of the table and cells.</p>
-              <!-- Bordered Table -->
-              <form action="edit-permission.php" method="post" enctype="multipart/form-data" class="row g-3">
-              <table id="tablepm" class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Level</th>
-                    <th scope="col">Role</th>
-                    <th scope="col" style="text-align: center;">Active</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-              <div class="text-center">
+              <h5 class="card-title">บันทึก Order</h5>
+
+              <!-- Multi Columns Form -->
+              <form action="create-order.php" method="post" enctype="multipart/form-data" class="row g-3">
+              <div class="col-md-2">
+                  <label for="inputQt_No" class="form-label">QT No.</label>
+                  <input type="text" class="form-control" id="inputQt_No" name="inputQt_No" readonly>
+                </div>
+              <div class="col-md-2">
+                  <label for="inputIs_No" class="form-label" data-bs-toggle="modal" data-bs-target="#ExtralargeModal">Issue No.</label>
+                  <input type="text" class="form-control" id="inputIs_No" name="inputIs_No" readonly>
+                  <input type="hidden" class="form-control" id="Is_No" name="inputIs_No" readonly>
+                </div>
+                                <!-- Extra Large Modal -->
+            
+              <div class="modal fade" id="ExtralargeModal" tabindex="-1">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">เลือกรายการแนบท้าย</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <table  id="tableOW"class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">OW No.</th>
+                        <th scope="col">OW Date</th>
+                        <th scope="col">QT No.</th>
+                        <th scope="col">รหัสลูกค้า</th>
+                        <th scope="col">ชื่อลูกค้า</th>
+                        <th scope="col">เลือก</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                      </tr>
+                    </tbody>
+                  </table>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                      <button type="button" class="btn btn-primary" id="confirmBtn">ยืนยัน</button>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- End Extra Large Modal-->
+                <div class="col-md-2">
+                  <label for="inputOR_No" class="form-label" data-bs-toggle="modal" data-bs-target="#ExtralargeModal1">Order No.</label>
+                  <input type="text" class="form-control" id="inputOR_No" name="inputOR_No" readonly>
+                </div>  
+                                  <!-- Extra Large Modal -->
+            
+              <div class="modal fade" id="ExtralargeModal1" tabindex="-1">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Extra Large Modal</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <table id="tableOR" class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">Order No.</th>
+                        <th scope="col">Shipment Date</th>
+                        <th scope="col">Issue No.</th>
+                        <th scope="col">Customer Code</th>
+                        <th scope="col">Customer Name</th>
+                        <th scope="col">Plan No.</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">เลือก</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      </tr>
+                    </tbody>
+                  </table>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                      <button type="button" class="btn btn-primary" id="confirmBtn1">ยืนยัน</button>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- End Extra Large Modal-->
+                <div class="col-md-1">
+                  <legend class="col-form-label col-md-2 pt-0">.</legend>
+                  <div class="col-sm-10">
+
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="gridCheck1">
+                      <label class="form-check-label" for="gridCheck1">
+                       New
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <label for="department" class="form-label">แผนก</label>
+                  <input type="text" class="form-control" id="department" name="department" readonly>
+                </div>  
+                <div class="col-md-2">
+                  <label for="inputDate" class="form-label">วันที่เปิด Order</label>
+                  <input type="text" class="form-control" id="inputDate" name="inputDate" value="" readonly >
+                </div>
+                <div class="col-md-2">
+                  <label for="shipDate" class="form-label">วันที่ขนงาน</label>
+                  <input type="date" class="form-control" id="shipDate" name="shipDate" required>
+                </div>
+                <div class="col-md-2">
+                  <label for="arrivetime" class="form-label">เวลาถึงลูกค้า</label>
+                  <input type="time" class="form-control" id="arrivetime" name="arrivetime" value="" required>
+                </div>
+                <div class="col-md-2">
+                  <label for="Customer_contact" class="form-label">ผู้ติดต่อ</label>
+                  <input type="text" class="form-control" id="Customer_contact" name="Customer_contact" readonly>
+                </div>
+                <div class="col-md-3">
+                  <label for="Customer_name" class="form-label">ชื่อลูกค้า</label>
+                  <input type="text" class="form-control" id="Customer_name" name="Customer_name" readonly>
+                </div>
+                <div class="col-md-5">
+                  <label for="Comp_Address" class="form-label">ที่อยู่รับWaste</label>
+                  <input type="text" class="form-control" id="Comp_Address" name="Comp_Address" readonly>
+                </div>
+                <div class="col-md-2">
+                  <label for="Trans_set" class="form-label">ชุดขนส่ง</label>
+                  <select  class="form-select" id="Trans_set" name="Trans_set" onchange="fetchset()">
+                    <option selected value="1">1</option>  
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="inputTrans_type" class="form-label">ประเภทรถขนส่ง</label>
+                  <input type="text" class="form-control" id="inputTrans_type" name="inputTrans_type" readonly>
+                </div>
+                <div class="col-md-2">
+                  <label for="Trans_group" class="form-label">กลุ่มรถขนส่ง</label>
+                  <input type="text" class="form-control" id="Trans_group" name="Trans_group" readonly>
+                </div>
+                <div class="col-md-2">
+                  <label for="Container_support" class="form-label">ประเภทภาชนะ</label>
+                  <input type="text" class="form-control" id="Container_support" name="Container_support" readonly>
+                </div>
+                <div class="col-md-4">
+                  <label for="Staff_name" class="form-label">ชื่อพนักงานขาย</label>
+                  <input type="text" class="form-control" id="Staff_name" name="Staff_name" readonly>
+                </div>
+                <div class="col-md-4">
+                  <label for="Customer_service" class="form-label">ลูกค้าสัมพันธ์</label>
+                  <input type="text" class="form-control" id="Customer_service" name="Customer_service" readonly>
+                </div>
+                <div class="col-md-6">
+                  <label for="inputRemark" class="form-label">Remark</label>
+                  <input type="text" class="form-control" id="inputRemark" name="inputRemark">
+                </div>
+                <div class="card">
+            <div class="card-body">
+              <!--h5 class="card-title"></h5-->
+              <!-- Bordered Tabs Justified -->
+              <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified" role="tablist">
+                <li class="nav-item flex-fill" role="presentation">
+                  <button class="nav-link w-100 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-home" type="button" role="tab" aria-controls="home" aria-selected="true">Waste</button>
+                </li>
+                <li class="nav-item flex-fill" role="presentation">
+                  <button class="nav-link w-100" id="profile-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-profile" type="button" role="tab" aria-controls="profile" aria-selected="false">หมายเหตุ</button>
+                </li>
+              </ul>
+              <div class="tab-content pt-2" id="borderedTabJustifiedContent">
+                <div class="tab-pane fade show active" id="bordered-justified-home" role="tabpanel" aria-labelledby="home-tab">
+                <table id="tablewaste" class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">เลือก</th>
+                        <th scope="col">Waste Code</th>
+                        <th scope="col">Waste Name</th>
+                        <th scope="col">การกำจัด</th>
+                        <th scope="col">ปริมาณ</th>
+                        <th scope="col">หน่วย</th>
+                        <th scope="col">จำนวนเงิน</th>
+                        <th scope="col">รับ Waste</th>
+                        <th scope="col">Mf Code</th>
+                        <th scope="col">Factory</th>
+                        <th scope="col">เลข กอ.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                    
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="tab-pane fade" id="bordered-justified-profile" role="tabpanel" aria-labelledby="profile-tab">
+                <table id="tableorder_remark" class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Remark</th>
+                        <th scope="col">Order No.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                    
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                
+              </div><!-- End Bordered Tabs Justified -->
+
+            </div>
+          </div>       
+                <!--div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck">
+                    <label class="form-check-label" for="gridCheck">
+                      Check me out
+                    </label>
+                  </div>
+                </div-->
+                <div class="text-center">
                   <button type="submit" class="btn btn-primary">Submit</button>
-                  <button type="reset" class="btn btn-secondary">Reset</button>
+                  <button type="button" class="btn btn-danger">ยกเลิก Order</button>
+                  <button type="reset" class="btn btn-secondary" onclick="location.reload();">Reset</button>
                   <input type="hidden" id="staff" name="staff" value="<?php echo $staff;?>">
                 </div>
-                </form>
-              <!-- End Bordered Table -->
+              </form><!-- End Multi Columns Form -->
 
             </div>
           </div>
@@ -808,7 +1019,10 @@ if($staff === 0 && $level < 3 && $role <> 'SUPER ADMIN'){
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-  <script src="assets/js/query_permission.js"></script>
+  <script src="assets/js/query_issue.js"></script>
+  <script src="assets/js/select_issue.js"></script>
+  <script src="assets/js/select_order.js"></script>
+  <!--script src="assets/js/script_form-order.js"></script-->
 </body>
 
 </html>

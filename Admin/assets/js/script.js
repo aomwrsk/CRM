@@ -20,6 +20,7 @@ fetch(url)
   console.log('Data:', data); // Log the data to check the response
   updateTable(data);
   updateChart(data.segmentData);
+  updateReport(data);
 
 })
 .catch(error => console.error('Error fetching data:', error));
@@ -48,8 +49,10 @@ function updateTable(data) {
 
 
         let totalSum1 = 0;
+        let totalSumqt = 0;
         data.costsheetData.forEach(qt => {
-          totalSum1 += parseFloat(qt.amount);
+          totalSum1 += parseFloat(qt.so_amount);
+          totalSumqt += parseFloat(qt.qt_no);
         });
         const qtElement = document.getElementById('qt_value');
         qtElement.textContent = totalSum1.toLocaleString('en-US', {
@@ -57,22 +60,38 @@ function updateTable(data) {
             maximumFractionDigits: 2
         }); 
 
-       
-        let uniqueap = new Set();
-        data.appointData.forEach(ap => {
-          uniqueap.add(ap.appoint_no); 
-        });
-        const countElement = document.getElementById('appoint');
-        countElement.textContent = uniqueap.size;
-        
-
-        let uniqueqt = new Set();
-        data.costsheetData.forEach(qt => {
-          uniqueqt.add(qt.qt_no); 
-        });
 
         const countElement1 = document.getElementById('qt_number');
-        countElement1.textContent = uniqueqt.size; 
+        countElement1.textContent = totalSumqt.toLocaleString('en-US', {
+        }); 
+
+       
+        let totalSumap = 0;
+        data.appointData.forEach(ap => {
+          totalSumap += parseFloat(ap.appoint_no);
+        });
+        const countElement = document.getElementById('appoint');
+        countElement.textContent = totalSumap.toLocaleString('en-US', {
+        }); 
+
+
+        let totalSum3 = 0;
+        data.orderData.forEach(or => {
+          totalSum3 += parseFloat(or.order_no);
+        });
+        const orElement1 = document.getElementById('or_number');
+        orElement1.textContent = totalSum3.toLocaleString('en-US', {
+        });   
+
+        let totalSum2 = 0;
+        data.orderData.forEach(or => {
+          totalSum2 += parseFloat(or.order_amount);
+        });
+        const orElement = document.getElementById('order_est');
+        orElement.textContent = totalSum2.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
 
                 // Calculate and display the ratio (revenue per sales order)
         const winrate = uniqueso.size;
@@ -82,7 +101,7 @@ function updateTable(data) {
             maximumFractionDigits: 0
         });
 
-        const winrateP = (uniqueso.size / uniqueqt.size) * 100 || 0;
+        const winrateP = (uniqueso.size / totalSumqt) * 100 || 0;
         const winratePElement = document.getElementById('winrate_percent');
         winratePElement.textContent = winrateP.toLocaleString('en-US', {
             minimumFractionDigits: 2,
@@ -126,15 +145,36 @@ const tbody = document.querySelector('#region tbody');
   
     //*****************************pie segment chart ***************************************************//
     function updateChart(segmentData) {
+      // Prepare chart data with segment_count as the value for the pie chart
       const chartData = segmentData.map(item => ({
-        value: item.segment_count,
-        name: item.customer_segment_name
+        value: item.segment_count, // This will be the displayed value in the pie chart
+        name: item.customer_segment_name, // Segment name for the pie slices
+        total_before_vat: item.total_before_vat // Include total_before_vat for the tooltip
       }));
     
+      // Initialize chart on the element with ID 'trafficChart'
       const chart = echarts.init(document.querySelector("#trafficChart"));
+    
+      // Set chart options
       chart.setOption({
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          formatter: function (params) {
+ // Format total_before_vat with commas and two decimal places
+ const formattedValue = params.data.total_before_vat.toLocaleString('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+// Calculate the percentage of the segment
+const percentage = params.percent.toFixed(2);
+            return `
+              <b>${params.name}</b><br>
+              Product Count: ${params.value}<br>
+              Value: ${formattedValue}<br>
+               Percentage: ${percentage}%
+            `;
+          }
         },
         legend: {
           top: '5%',
@@ -159,10 +199,11 @@ const tbody = document.querySelector('#region tbody');
           labelLine: {
             show: false
           },
-          data: chartData
+          data: chartData // Use the prepared chartData
         }]
       });
     }
+    
 
     /*function BarChart(RegionData) {
       const regionCategories = ['North', 'Central', 'East', 'North-East', 'West', 'South'];
@@ -266,4 +307,59 @@ for (let year = currentYear; year >= startYear; year--) {
   option.value = year;
   option.text = year;
   yearSelect.appendChild(option);
+}
+function updateReport(data) {
+  const appoints = data.appointData.map(item => item.appoint_no);
+  const costsheet = data.costsheetData.map(item => item.qt_no);
+  const saleorder = data.SOData.map(item => item.so_no);
+  const dateAP = data.costsheetData.map(item => item.format_date);
+
+  new ApexCharts(document.querySelector("#reportsChart"), {
+    series: [{
+      name: 'Appoints',
+      data: appoints,
+    }, {
+      name: 'Quotation',
+      data: costsheet,
+    }, {
+      name: 'Revenue',
+      data: saleorder,
+    }],
+    chart: {
+      height: 350,
+      type: 'area',
+      toolbar: {
+        show: false
+      },
+    },
+    markers: {
+      size: 4
+    },
+    colors: ['#ff771d', '#4154f1', '#2eca6a'],
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.3,
+        opacityTo: 0.4,
+        stops: [0, 90, 100]
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 2
+    },
+    xaxis: {
+      type: 'category',
+      categories: dateAP
+    },
+    tooltip: {
+      x: {  
+        format: 'dd/MM/yyyy'
+      },
+    }
+  }).render();
 }

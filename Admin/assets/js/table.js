@@ -1,3 +1,4 @@
+
 function fetchData() {
   const year_no = document.getElementById('year').value;
   const month_no = document.getElementById('month').value;
@@ -18,6 +19,13 @@ function fetchData() {
     .then(data => {
       console.log('Data:', data); // Log the data to check the response
       updateTable(data);
+           // Destroy previous DataTable instance if it exists
+           if (dataTable) {
+            dataTable.destroy();
+          }
+    
+          // Reinitialize the DataTable after the data has been updated
+          dataTable = new simpleDatatables.DataTable("#tableAP");
     })
     .catch(error => console.error('Error fetching data:', error));
     }

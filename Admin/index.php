@@ -378,12 +378,12 @@ if($staff === 0 || $level <= 1){
           </li>
           <li>
             <a href="forms-appoint.php">
-              <i class="bi bi-circle"></i><span>Form Appoint</span>
+              <i class="bi bi-circle"></i><span>บันทึกข้อมูลลูกค้า</span>
             </a>
           </li>
           <li>
-            <a href="forms-editors.html">
-              <i class="bi bi-circle"></i><span>Form Editors</span>
+            <a href="forms-order.php">
+              <i class="bi bi-circle"></i><span>บันทึก Order</span>
             </a>
           </li>
           <li>
@@ -592,7 +592,7 @@ if($staff === 0 || $level <= 1){
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card customers-card">
 
-                <div class="filter">
+                <!--div class="filter">
                   <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                   <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <li class="dropdown-header text-start">
@@ -602,7 +602,7 @@ if($staff === 0 || $level <= 1){
                     <li><a class="dropdown-item" href="#" id= "aponline" value="I">Online</a></li>
                     <li><a class="dropdown-item" href="#" id ="apoffline" value="O">Offline</a></li>
                   </ul>
-                </div>
+                </div-->
 
                 <div class="card-body">
                   <h5 class="card-title">Appoint</h5>
@@ -626,7 +626,7 @@ if($staff === 0 || $level <= 1){
 <div class="col-xxl-4 col-md-6">
   <div class="card info-card sales-card">
 
-    <div class="filter">
+    <!--div class="filter">
       <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
       <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
         <li class="dropdown-header text-start">
@@ -637,7 +637,7 @@ if($staff === 0 || $level <= 1){
         <li><a class="dropdown-item" href="#">This Month</a></li>
         <li><a class="dropdown-item" href="#">This Year</a></li>
       </ul>
-    </div>
+    </div-->
 
     <div class="card-body">
       <h5 class="card-title">Quatation</h5>
@@ -662,7 +662,7 @@ if($staff === 0 || $level <= 1){
 <div class="col-xxl-4 col-md-6">
   <div class="card info-card revenue-card">
 
-    <div class="filter">
+    <!--div class="filter">
       <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
       <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
         <li class="dropdown-header text-start">
@@ -673,7 +673,42 @@ if($staff === 0 || $level <= 1){
         <li><a class="dropdown-item" href="#">This Month</a></li>
         <li><a class="dropdown-item" href="#">This Year</a></li>
       </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Estimate Revenue</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="or_number"></h6>
+          <span id="order_est" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+
+        </div>
+      </div>
     </div>
+
+  </div>
+</div><!-- End Revenue Card -->
+
+<!-- Revenue Card -->
+<div class="col-xxl-4 col-md-6">
+  <div class="card info-card revenue-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
 
     <div class="card-body">
       <h5 class="card-title">Revenue</h5>
@@ -692,12 +727,41 @@ if($staff === 0 || $level <= 1){
 
   </div>
 </div><!-- End Revenue Card -->
+ <!-- Reports -->
+ <div class="col-12">
+              <div class="card">
 
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Reports <span>/Today</span></h5>
+
+                  <!-- Line Chart -->
+                  <div id="reportsChart"></div>
+
+                 
+                  <!-- End Line Chart -->
+
+                </div>
+
+              </div>
+            </div><!-- End Reports -->
  <!-- Recent Sales -->
  <div class="col-12">
   <div class="card recent-sales overflow-auto">
 
-    <div class="filter">
+    <!--div class="filter">
       <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
       <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
         <li class="dropdown-header text-start">
@@ -708,7 +772,7 @@ if($staff === 0 || $level <= 1){
         <li><a class="dropdown-item" href="#">This Month</a></li>
         <li><a class="dropdown-item" href="#">This Year</a></li>
       </ul>
-    </div>
+    </div-->
 
     <div class="card-body">
       <h5 class="card-title">Region</h5>
@@ -845,6 +909,7 @@ if($staff === 0 || $level <= 1){
            
 
           <div class="card">
+            
             <div class="card-body pb-0">
               <h5 class="card-title">Segment</h5>
               <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
@@ -890,6 +955,7 @@ if($staff === 0 || $level <= 1){
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
   <script src="assets/js/script.js"></script>
+  <!--script src="assets/js/report.js"></script-->
 </body>
 
 </html>

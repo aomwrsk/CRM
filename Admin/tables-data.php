@@ -583,7 +583,7 @@ if($staff === 0 || $level <= 1){
                   <button type="reset" class="btn btn-secondary">Reset</button>
                   <input type="hidden" id="staff" name="staff" value="<?php echo $staff;?>">
                 </div>
-              <table id="tableAP" class="table datatable">
+              <table id="tableAP" class="table table-borderless datatable">
                 <thead>
                   <tr>
                     <th data-type="date" data-format="YYYY/DD/MM">วันที่ติดต่อ</th>
@@ -598,7 +598,6 @@ if($staff === 0 || $level <= 1){
                 </thead>
                 <tbody>
                   <tr>
-
                   </tr>
                 </tbody>
               </table>
