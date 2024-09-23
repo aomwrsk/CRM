@@ -26,13 +26,36 @@ fetch(url)
 .catch(error => console.error('Error fetching data:', error));
 
 }
+function fetchData(period) {
+  const year_no = document.getElementById('year').value;
+const month_no = document.getElementById('month').value;
+const channel = document.getElementById('channel').value;
+const Sales = document.getElementById('Sales').value;
+const is_new = document.getElementById('is_new').value;
+  let url;
+  url = `revenue.php?year_no=${year_no}&month_no=${month_no}&channel=${channel}&Sales=${Sales}&is_new=${is_new}`;
+
+  fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'period=' + period
+  })
+  .then(response => response.json()) // Assuming the response is JSON
+  .then(data => {
+      console.log(data); // Handle the response data (example: log the data)
+      document.getElementById('dataContainer').innerHTML = data.content; // Update the DOM
+  })
+  .catch(error => console.error('Error fetching data:', error));
+}
 
 function updateTable(data) {
         let totalSum = 0;
-        let uniqueso = new Set();
+        let totalSumso = 0;
         data.revenueData.forEach(revenue => {
-            totalSum += parseFloat(revenue.total_before_vat);
-            uniqueso.add(revenue.so_no); 
+            totalSum += parseFloat(revenue.so_amount)|| 0;
+            totalSumso += parseFloat(revenue.so_no)|| 0;
         });
 
         const revenueElement = document.getElementById('revenue');
@@ -41,18 +64,16 @@ function updateTable(data) {
             maximumFractionDigits: 2
         }); 
 
-        
         const countElement2 = document.getElementById('so_number');
-        countElement2.textContent = uniqueso.size; 
-
-
+        countElement2.textContent = totalSumso.toLocaleString('en-US', {
+        });  
 
 
         let totalSum1 = 0;
         let totalSumqt = 0;
         data.costsheetData.forEach(qt => {
-          totalSum1 += parseFloat(qt.so_amount);
-          totalSumqt += parseFloat(qt.qt_no);
+          totalSum1 += parseFloat(qt.so_amount)|| 0;
+          totalSumqt += parseFloat(qt.qt_no)|| 0;
         });
         const qtElement = document.getElementById('qt_value');
         qtElement.textContent = totalSum1.toLocaleString('en-US', {
@@ -63,12 +84,12 @@ function updateTable(data) {
 
         const countElement1 = document.getElementById('qt_number');
         countElement1.textContent = totalSumqt.toLocaleString('en-US', {
-        }); 
+        }) ; 
 
        
         let totalSumap = 0;
         data.appointData.forEach(ap => {
-          totalSumap += parseFloat(ap.appoint_no);
+          totalSumap += parseFloat(ap.appoint_no) || 0;
         });
         const countElement = document.getElementById('appoint');
         countElement.textContent = totalSumap.toLocaleString('en-US', {
@@ -77,7 +98,7 @@ function updateTable(data) {
 
         let totalSum3 = 0;
         data.orderData.forEach(or => {
-          totalSum3 += parseFloat(or.order_no);
+          totalSum3 += parseFloat(or.order_no) || 0;
         });
         const orElement1 = document.getElementById('or_number');
         orElement1.textContent = totalSum3.toLocaleString('en-US', {
@@ -94,21 +115,21 @@ function updateTable(data) {
         }); 
 
                 // Calculate and display the ratio (revenue per sales order)
-        const winrate = uniqueso.size;
+        const winrate = totalSumso || 0;
         const winrateElement = document.getElementById('winrate');
         winrateElement.textContent = winrate.toLocaleString('en-US', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         });
 
-        const winrateP = (uniqueso.size / totalSumqt) * 100 || 0;
+        const winrateP = (totalSumso / totalSumqt) * 100 || 0;
         const winratePElement = document.getElementById('winrate_percent');
         winratePElement.textContent = winrateP.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }) + ' %';
                 // Calculate and display the ratio (revenue per sales order)
-const ratio = totalSum / uniqueso.size || 0;
+const ratio = totalSum / totalSumso || 0;
 const ratioElement = document.getElementById('AOV');
 ratioElement.textContent = ratio.toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -149,7 +170,8 @@ const tbody = document.querySelector('#region tbody');
       const chartData = segmentData.map(item => ({
         value: item.segment_count, // This will be the displayed value in the pie chart
         name: item.customer_segment_name, // Segment name for the pie slices
-        total_before_vat: item.total_before_vat // Include total_before_vat for the tooltip
+        total_before_vat: item.total_before_vat, // Include total_before_vat for the tooltip
+        aov: item.aov
       }));
     
       // Initialize chart on the element with ID 'trafficChart'
@@ -165,14 +187,17 @@ const tbody = document.querySelector('#region tbody');
   minimumFractionDigits: 2,
   maximumFractionDigits: 2
 });
+const aov = params.data.aov;
 
 // Calculate the percentage of the segment
 const percentage = params.percent.toFixed(2);
             return `
               <b>${params.name}</b><br>
-              Product Count: ${params.value}<br>
+              Product qty: ${params.value}<br>
+              Ratio: ${percentage} %<br>
               Value: ${formattedValue}<br>
-               Percentage: ${percentage}%
+              AOV: ${aov}<br>
+              winrate: ${aov} %
             `;
           }
         },
@@ -181,7 +206,7 @@ const percentage = params.percent.toFixed(2);
           left: 'center'
         },
         series: [{
-          name: 'Segment',
+          name: 'Product',
           type: 'pie',
           radius: ['40%', '70%'],
           avoidLabelOverlap: false,
@@ -311,19 +336,29 @@ for (let year = currentYear; year >= startYear; year--) {
 function updateReport(data) {
   const appoints = data.appointData.map(item => item.appoint_no);
   const costsheet = data.costsheetData.map(item => item.qt_no);
-  const saleorder = data.SOData.map(item => item.so_no);
-  const dateAP = data.costsheetData.map(item => item.format_date);
-
+  const saleorder = data.revenueData.map(item => item.so_no);
+  const saleorderAccu = data.revenueaccuData.map(item => parseFloat(item.accumulated_so).toFixed(0));
+  const dateAP = data.revenueaccuData.map(item => item.format_date);
+  const month_no = document.getElementById('month').value;
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
+  if(month_no == 0){
+    monthName = dateAP;
+  }else{  
+    monthName = dateAP;
+}
   new ApexCharts(document.querySelector("#reportsChart"), {
-    series: [{
+    series: [/*{
       name: 'Appoints',
       data: appoints,
     }, {
       name: 'Quotation',
       data: costsheet,
-    }, {
+    }, */{
       name: 'Revenue',
-      data: saleorder,
+      data: saleorderAccu,
     }],
     chart: {
       height: 350,
@@ -335,7 +370,7 @@ function updateReport(data) {
     markers: {
       size: 4
     },
-    colors: ['#ff771d', '#4154f1', '#2eca6a'],
+    colors: [/*'#ff771d', '#4154f1', */'#2eca6a'],
     fill: {
       type: "gradient",
       gradient: {
@@ -354,11 +389,13 @@ function updateReport(data) {
     },
     xaxis: {
       type: 'category',
-      categories: dateAP
+      categories: monthName
     },
     tooltip: {
-      x: {  
-        format: 'dd/MM/yyyy'
+      y: {
+        formatter: function(value) {
+          return value.toLocaleString(undefined, { style: 'currency', currency: 'THB' });
+        },
       },
     }
   }).render();

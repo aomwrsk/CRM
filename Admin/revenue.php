@@ -16,21 +16,83 @@ $month_no = isset($_GET['month_no']) ? $_GET['month_no'] : $currentMonth;
 $channel = isset($_GET['channel']) ? $_GET['channel'] : NULL;
 $Sales = isset($_GET['Sales']) ? $_GET['Sales'] : NULL;
 $is_new = isset($_GET['is_new']) ? $_GET['is_new'] : NULL;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $period = $_POST['period'];
+    echo $period;
 
+}
 
 if ($year_no <> 0 && $month_no == 0 && $channel == 'N' && $Sales == 'N' && $is_new == 0) {
     $sqlrevenue = "SELECT 
-    FORMAT(DATEFROMPARTS(year_no, month_no,1), 'yyyy-MM') AS format_date,
-	SUM(total_before_vat)AS so_amount,
-    COUNT(so_no) AS so_no
+    FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+    SUM(A.total_before_vat) AS so_amount,
+    COUNT(A.so_no) AS so_no
 FROM 
-    so_head
+    View_SO_SUM A
 WHERE 
-    is_status <> 'C' AND year_no = ?
+    A.year_no = ?
 GROUP BY 
-     FORMAT(DATEFROMPARTS(year_no, month_no,1), 'yyyy-MM')
+    FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
 ORDER BY 
     format_date ASC";
+     $sqlrevenue_accu = "SELECT 
+    FORMAT(DATEFROMPARTS(A.year_no, A.month_no, 1), 'yyyy-MM') AS format_date,
+    CASE
+        WHEN A.month_no = 2 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2))
+		 WHEN A.month_no = 3 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3))
+		WHEN A.month_no = 4 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4))
+		WHEN A.month_no = 5 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5))
+		WHEN A.month_no = 6 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6))
+		WHEN A.month_no = 7 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7))
+		WHEN A.month_no = 8 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8))
+		WHEN A.month_no = 9 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9))
+		WHEN A.month_no = 10 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+		WHEN A.month_no = 11 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
+		WHEN A.month_no = 12 THEN 
+            (SELECT SUM(A2.total_before_vat) 
+             FROM View_SO_SUM A2 
+             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
+        ELSE SUM(A.total_before_vat)
+    END AS accumulated_so,
+    COUNT(A.so_no) AS so_no
+FROM 
+    View_SO_SUM A
+WHERE 
+    A.year_no = ?
+GROUP BY 
+    FORMAT(DATEFROMPARTS(A.year_no, A.month_no, 1), 'dd-MM'), A.month_no, A.year_no
+ORDER BY 
+    format_date ASC;";
     $sqlappoint = "SELECT 
     FORMAT(appoint_date, 'yyyy-MM') AS format_date,
     COUNT(appoint_no) AS appoint_no
@@ -42,28 +104,33 @@ GROUP BY
     FORMAT(appoint_date, 'yyyy-MM')
 ORDER BY 
     format_date ASC";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-                FROM order_head
-                WHERE YEAR(order_date) = ? AND is_status <> 'C'
-                GROUP BY MONTH(order_date)
-                ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, SUM(total_before_vat) AS total_before_vat ,COUNT(a.customer_segment_code) AS segment_count 
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                FROM order_head A
+                LEFT JOIN so_detail B ON A.order_no = B.order_no
+                WHERE YEAR(A.shipment_date) = ? AND is_status <> 'C'
+                AND B.so_no IS NULL
+                GROUP BY MONTH(A.shipment_date)
+                ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ?
-                   GROUP BY b.customer_segment_name";
+                   GROUP BY b.customer_segment_name"; 
     $sqlcostsheet = "SELECT 
-    FORMAT(qt_date, 'yyyy-MM') AS format_date,
-	SUM(so_amount)AS so_amount,
-    COUNT(qt_no) AS qt_no
-FROM 
-    cost_sheet_head
-WHERE 
-    is_status <> 'C' AND YEAR(qt_date) = ? 
-GROUP BY 
-    FORMAT(qt_date, 'yyyy-MM')
-ORDER BY 
-    format_date ASC";
+                  FORMAT(qt_date, 'yyyy-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ? 
+                  GROUP BY 
+                  FORMAT(qt_date, 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
     $sqlregion = "SELECT 
   C.customer_segment_name AS segment,
   COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -85,43 +152,72 @@ GROUP BY
 ";
     $params = array($year_no);
 }elseif($year_no <> 0 && $month_no <> 0 && $channel == 'N' && $Sales == 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ?";
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ? AND A.month_no = ?
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlrevenue_accu = "SELECT 
+    FORMAT(shipment_date, 'dd-MM') AS format_date,
+    SUM(A.total_before_vat) AS accumulated_so,
+    COUNT(A.so_no) AS so_no
+                  FROM 
+                      View_SO_SUM A
+                  WHERE 
+                      A.year_no = ? AND A.month_no = ?
+                  GROUP BY 
+                      FORMAT(shipment_date, 'dd-MM'), A.month_no, A.year_no,shipment_date
+                  ORDER BY 
+                      YEAR(shipment_date) ASC, month(shipment_date)";
     $sqlappoint = "SELECT 
-    FORMAT(appoint_date, 'dd-MM') AS format_date,
-    COUNT(appoint_no) AS appoint_no
-FROM 
-    appoint_head
-WHERE 
-    YEAR(appoint_date) = ?
-    AND MONTH(appoint_date) = ?
-GROUP BY 
-    FORMAT(appoint_date, 'dd-MM')
-ORDER BY 
-    format_date ASC";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head
-    WHERE YEAR(order_date) = ? AND MONTH(order_date) = ? AND is_status <> 'C'
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, SUM(total_before_vat) AS total_before_vat ,COUNT(a.customer_segment_code) AS segment_count 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  WHERE YEAR(A.shipment_date) = ? AND MONTH(A.shipment_date) = ? 
+                  AND is_status <> 'C'
+                  AND B.so_no IS NULL
+                  GROUP BY MONTH(A.shipment_date)
+                  ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND a.month_no = ?
                    GROUP BY b.customer_segment_name";
-    $sqlcostsheet = "SELECT 
-    FORMAT(qt_date, 'dd-MM') AS format_date,
-	SUM(so_amount)AS so_amount,
-    COUNT(qt_no) AS qt_no
-FROM 
-    cost_sheet_head
-WHERE 
-    is_status <> 'C' AND YEAR(qt_date) = ?
-    AND MONTH(qt_date) = ?
-GROUP BY 
-    FORMAT(qt_date, 'dd-MM')
-ORDER BY 
-    format_date ASC;";
-       $sqlregion = "SELECT 
+  $sqlcostsheet = "SELECT 
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlregion = "SELECT 
        C.customer_segment_name AS segment,
        COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
        COUNT(CASE WHEN B.zone_code = '02' THEN A.province_code END) AS 'Central',
@@ -141,31 +237,60 @@ ORDER BY
        C.customer_segment_name
      ";
     $params = array($year_no, $month_no);
-}/*elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales == 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND sales_channels_group_code = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-FROM order_head A
-LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND C.sales_channels_group_code = ?
-GROUP BY MONTH(order_date)
-ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+}elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales == 'N' && $is_new == 0){
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  AND A.sales_channels_group_code = ?
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                      appoint_head
+                  WHERE 
+                      YEAR(appoint_date) = ?
+                      AND is_call = ?
+                  GROUP BY 
+                      FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                      format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+                  WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+                  AND C.sales_channels_group_code = ? AND B.so_no IS NULL
+                  GROUP BY MONTH(A.shipment_date)
+                  ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND a.sales_channels_group_code = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND sales_channels_group_code = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND sales_channels_group_code = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
     $sqlregion = "SELECT 
     C.customer_segment_name AS segment,
     COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -187,30 +312,58 @@ FROM cost_sheet_head A
   ";
     $params = array($year_no, $channel);
 }elseif($year_no <> 0 && $month_no == 0 && $channel == 'N' && $Sales <> 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND staff_id = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND staff_id = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM View_SO_SUM a
-                   LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND a.staff_id = ?
-                   GROUP BY b.customer_segment_name";
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                      appoint_head
+                  WHERE 
+                      YEAR(appoint_date) = ?
+                      AND staff_id = ?
+                  GROUP BY 
+                      FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                      format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' AND staff_id = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat,
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov,  
+                  COUNT(a.customer_segment_code) AS segment_count 
+                  FROM View_SO_SUM a
+                  LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
+                  WHERE a.year_no = ? AND a.staff_id = ?
+                  GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND staff_id = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
            $sqlregion = "SELECT 
            C.customer_segment_name AS segment,
            COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -238,31 +391,58 @@ FROM cost_sheet_head A
         $is_new_array = ['03'];
     }
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  AND status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                      appoint_head
+                  WHERE 
+                      YEAR(appoint_date) = ?
+                  GROUP BY 
+                      FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                      format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' AND C.is_new = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND status IN ($is_new_list)
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND is_new = ?";
-           $sqlregion = "SELECT 
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlregion = "SELECT 
            C.customer_segment_name AS segment,
            COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
            COUNT(CASE WHEN B.zone_code = '02' THEN A.province_code END) AS 'Central',
@@ -283,30 +463,63 @@ FROM cost_sheet_head A
          ";
     $params = array($year_no, $is_new);
 }elseif($year_no <> 0 && $month_no <> 0 && $channel <> 'N' && $Sales == 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND sales_channels_group_code = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND MONTH(A.order_date) = ? AND sales_channels_group_code = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM View_SO_SUM a
-                   LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND a.month_no = ? AND sales_channels_group_code = ?
-                   GROUP BY b.customer_segment_name";
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND A.month_no = ? 
+                  AND sales_channels_group_code = ?
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  AND is_call = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+                  WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+                  AND MONTH(A.shipment_date) = ? AND C.sales_channels_group_code = ? AND B.so_no IS NULL
+                  GROUP BY MONTH(A.shipment_date)
+                  ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
+                  FROM View_SO_SUM a
+                  LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
+                  WHERE a.year_no = ? AND a.month_no = ? AND sales_channels_group_code = ?
+                  GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND sales_channels_group_code = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?
+                  AND sales_channels_group_code = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
          $sqlregion = "SELECT 
          C.customer_segment_name AS segment,
          COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -327,30 +540,63 @@ FROM cost_sheet_head A
        ";
     $params = array($year_no, $month_no, $channel);
 }elseif($year_no <> 0 && $month_no <> 0 && $channel == 'N' && $Sales <> 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND staff_id = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND MONTH(A.order_date) = ? AND staff_id = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND A.month_no = ? 
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+                  WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+                  AND MONTH(A.shipment_date) = ? AND staff_id = ? AND B.so_no IS NULL
+                  GROUP BY MONTH(A.shipment_date)
+                  ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND staff_id = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
         $sqlregion = "SELECT 
         C.customer_segment_name AS segment,
         COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -378,30 +624,63 @@ FROM cost_sheet_head A
     }
     
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND MONTH(A.order_date) = ? AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND A.month_no = ? 
+                  AND A.status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' AND MONTH(A.shipment_date) = ? 
+    AND C.is_new = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND a.status IN ($is_new_list)
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND is_new = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' 
+                  AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
           $sqlregion = "SELECT 
           C.customer_segment_name AS segment,
           COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -421,30 +700,63 @@ FROM cost_sheet_head A
           C.customer_segment_name";
     $params = array($year_no, $month_no, $is_new);
 }elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales <> 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND sales_channels_group_code = ? AND staff_id = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND sales_channels_group_code = ? AND staff_id = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?    
+                  AND sales_channels_group_code = ?
+                  AND A.staff_id = ? 
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND is_call = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+    AND C.sales_channels_group_code = ? AND staff_id = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND sales_channels_group_code = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND sales_channels_group_code = ? AND staff_id = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND sales_channels_group_code = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
          $sqlregion = "SELECT 
          C.customer_segment_name AS segment,
          COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -473,30 +785,62 @@ FROM cost_sheet_head A
     }
     
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND sales_channels_group_code = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND sales_channels_group_code = ? AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND sales_channels_group_code = ?
+                  AND A.status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND is_call = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+    AND C.sales_channels_group_code = ? AND C.is_new = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND a.sales_channels_group_code = ? AND a.status IN ($is_new_list)
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND sales_channels_group_code = ? AND is_new = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?   
+                  AND sales_channels_group_code = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
     $sqlregion = "SELECT 
     C.customer_segment_name AS segment,
     COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -523,30 +867,61 @@ FROM cost_sheet_head A
     }
     
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND staff_id = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND staff_id = ? AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND staff_id = ?
+                  AND A.status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' AND A.staff_id = ? AND C.is_new = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND staff_id = ? AND a.status IN ($is_new_list)
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND staff_id = ? AND is_new = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?   
+                  AND staff_id = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
      $sqlregion = "SELECT 
      C.customer_segment_name AS segment,
      COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -566,30 +941,66 @@ FROM cost_sheet_head A
      C.customer_segment_name";
     $params = array($year_no, $Sales, $is_new);   
 }elseif($year_no <> 0 && $month_no <> 0 && $channel <> 'N' && $Sales <> 'N' && $is_new == 0){
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND sales_channels_group_code = ? AND staff_id = ?";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND MONTH(A.order_date) = ? AND sales_channels_group_code = ? AND staff_id = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND A.month_no = ? 
+                  AND sales_channels_group_code = ?
+                  AND A.staff_id = ?
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  AND is_call = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+    AND MONTH(A.shipment_date) = ? AND C.sales_channels_group_code = ? AND A.staff_id = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND sales_channels_group_code = ? AND staff_id = ?
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND sales_channels_group_code = ? AND staff_id = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?
+                  AND sales_channels_group_code = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
      $sqlregion = "SELECT 
      C.customer_segment_name AS segment,
      COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -616,47 +1027,82 @@ FROM cost_sheet_head A
     }
     
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND sales_channels_group_code = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND MONTH(A.order_date) = ? AND sales_channels_group_code = ? AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND A.month_no = ? 
+                  AND sales_channels_group_code = ?
+                  AND A.status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  AND is_call = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+    AND MONTH(A.shipment_date) = ? AND C.sales_channels_group_code = ? AND C.is_new = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND sales_channels_group_code = ? AND a.status IN ($is_new_list)
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND sales_channels_group_code = ? AND is_new = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?
+                  AND sales_channels_group_code = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
     $sqlregion = "SELECT 
-    C.customer_segment_name AS segment,
-    COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
-    COUNT(CASE WHEN B.zone_code = '02' THEN A.province_code END) AS 'Central',
-    COUNT(CASE WHEN B.zone_code = '03' THEN A.province_code END) AS 'East',
-    COUNT(CASE WHEN B.zone_code = '04' THEN A.province_code END) AS 'North_East',
-    COUNT(CASE WHEN B.zone_code = '05' THEN A.province_code END) AS 'West',
-    COUNT(CASE WHEN B.zone_code = '06' THEN A.province_code END) AS 'South'
-    FROM 
-      View_SO_SUM A
-    LEFT JOIN 
-      ms_province B ON A.province_code = B.province_code
-    LEFT JOIN 
-      ms_customer_segment C ON A.customer_segment_code = C.customer_segment_code
-    WHERE a.year_no = ? AND month_no = ? AND sales_channels_group_code = ? AND a.status IN ($is_new_list)
-    GROUP BY
-    C.customer_segment_name";
+                  C.customer_segment_name AS segment,
+                  COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
+                  COUNT(CASE WHEN B.zone_code = '02' THEN A.province_code END) AS 'Central',
+                  COUNT(CASE WHEN B.zone_code = '03' THEN A.province_code END) AS 'East',
+                  COUNT(CASE WHEN B.zone_code = '04' THEN A.province_code END) AS 'North_East',
+                  COUNT(CASE WHEN B.zone_code = '05' THEN A.province_code END) AS 'West',
+                  COUNT(CASE WHEN B.zone_code = '06' THEN A.province_code END) AS 'South'
+                  FROM 
+                  View_SO_SUM A
+                  LEFT JOIN 
+                  ms_province B ON A.province_code = B.province_code
+                  LEFT JOIN 
+                  ms_customer_segment C ON A.customer_segment_code = C.customer_segment_code
+                  WHERE a.year_no = ? AND month_no = ? AND sales_channels_group_code = ? AND a.status IN ($is_new_list)
+                  GROUP BY
+                  C.customer_segment_name";
     $params = array($year_no, $month_no, $channel, $is_new);
 }elseif($year_no <> 0 && $month_no <> 0 && $channel == 'N' && $Sales <> 'N' && $is_new <> 0){
     if ($is_new == 'Y') {
@@ -666,47 +1112,82 @@ FROM cost_sheet_head A
     }
     
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND staff_id = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND MONTH(A.order_date) = ? AND staff_id = ? AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
-                   FROM View_SO_SUM a
-                   LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
-                   WHERE a.year_no = ? AND a.month_no = ? AND a.staff_id = ? AND a.status IN ($is_new_list)
-                   GROUP BY b.customer_segment_name";
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND A.month_no = ? 
+                  AND A.staff_id = ?
+                  AND A.status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+                  WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+                  AND MONTH(A.shipment_date) = ? AND staff_id = ? AND C.is_new = ? AND B.so_no IS NULL
+                  GROUP BY MONTH(A.shipment_date)
+                  ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
+                  FROM View_SO_SUM a
+                  LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
+                  WHERE a.year_no = ? AND a.month_no = ? AND a.staff_id = ? AND a.status IN ($is_new_list)
+                  GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND staff_id = ? AND is_new = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?    
+                  AND staff_id = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
         $sqlregion = "SELECT 
-        C.customer_segment_name AS segment,
-        COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
-        COUNT(CASE WHEN B.zone_code = '02' THEN A.province_code END) AS 'Central',
-        COUNT(CASE WHEN B.zone_code = '03' THEN A.province_code END) AS 'East',
-        COUNT(CASE WHEN B.zone_code = '04' THEN A.province_code END) AS 'North_East',
-        COUNT(CASE WHEN B.zone_code = '05' THEN A.province_code END) AS 'West',
-        COUNT(CASE WHEN B.zone_code = '06' THEN A.province_code END) AS 'South'
-        FROM 
-          View_SO_SUM A
-        LEFT JOIN 
-          ms_province B ON A.province_code = B.province_code
-        LEFT JOIN 
-          ms_customer_segment C ON A.customer_segment_code = C.customer_segment_code
-        WHERE a.year_no = ? AND a.month_no = ? AND a.staff_id = ? AND a.status IN ($is_new_list)
-        GROUP BY
-        C.customer_segment_name";
+                  C.customer_segment_name AS segment,
+                  COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
+                  COUNT(CASE WHEN B.zone_code = '02' THEN A.province_code END) AS 'Central',
+                  COUNT(CASE WHEN B.zone_code = '03' THEN A.province_code END) AS 'East',
+                  COUNT(CASE WHEN B.zone_code = '04' THEN A.province_code END) AS 'North_East',
+                  COUNT(CASE WHEN B.zone_code = '05' THEN A.province_code END) AS 'West',
+                  COUNT(CASE WHEN B.zone_code = '06' THEN A.province_code END) AS 'South'
+                  FROM 
+                    View_SO_SUM A
+                  LEFT JOIN 
+                    ms_province B ON A.province_code = B.province_code
+                  LEFT JOIN 
+                    ms_customer_segment C ON A.customer_segment_code = C.customer_segment_code
+                  WHERE a.year_no = ? AND a.month_no = ? AND a.staff_id = ? AND a.status IN ($is_new_list)
+                  GROUP BY
+                  C.customer_segment_name";
     $params = array($year_no, $month_no, $Sales, $is_new);
 }elseif($year_no <> 0 && $month_no == 0 && $channel <> 'N' && $Sales <> 'N' && $is_new <> 0){
     if ($is_new == 'Y') {
@@ -716,30 +1197,66 @@ FROM cost_sheet_head A
     }
     
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-    $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND sales_channels_group_code = ? AND staff_id = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND is_call = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND sales_channels_group_code = ? AND staff_id = ? AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?                   
+                  AND sales_channels_group_code = ?
+                  AND staff_id = ?
+                  AND A.status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?           
+                  AND is_call = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+    AND C.sales_channels_group_code = ? AND A.staff_id = ? AND C.is_new = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND a.sales_channels_group_code = ? AND a.staff_id = ? AND a.status IN ($is_new_list)
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND sales_channels_group_code = ? AND staff_id = ? AND is_new = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' 
+                  AND YEAR(qt_date) = ? 
+                  AND sales_channels_group_code = ?
+                  AND staff_id = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
     $sqlregion = "SELECT 
     C.customer_segment_name AS segment,
     COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -767,30 +1284,69 @@ FROM cost_sheet_head A
     }
     
     $is_new_list = "'" . implode("','", $is_new_array) . "'";
-        $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ?  AND sales_channels_group_code = ? AND staff_id = ? AND status IN ($is_new_list)";
-    $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND is_call = ? AND staff_id = ?";
-    $sqlorder = "SELECT MONTH(order_date) AS month_no,SUM(A.total_before_discount) AS order_amount,COUNT(order_no) AS order_no
-    FROM order_head A
-    LEFT JOIN issue_head B ON A.issue_no = B.issue_no
-    LEFT JOIN cost_sheet_head C ON B.qt_no = C.qt_no
-    WHERE YEAR(order_date) = ? AND A.is_status <> 'C' AND MONTH(A.order_date) = ? AND sales_channels_group_code = ? AND staff_id = ? AND C.is_new = ?
-    GROUP BY MONTH(order_date)
-    ORDER BY MONTH(order_date) ASC";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+        $sqlrevenue = "SELECT 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                  SUM(A.total_before_vat) AS so_amount,
+                  COUNT(A.so_no) AS so_no
+                  FROM 
+                  View_SO_SUM A
+                  WHERE 
+                  A.year_no = ?  
+                  AND A.month_no = ? 
+                  AND sales_channels_group_code = ?
+                  AND A.staff_id = ? 
+                  AND A.status IN ($is_new_list)
+                  GROUP BY 
+                  FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlappoint = "SELECT 
+                  FORMAT(appoint_date, 'dd-MM') AS format_date,
+                  COUNT(appoint_no) AS appoint_no
+                  FROM 
+                  appoint_head
+                  WHERE 
+                  YEAR(appoint_date) = ?
+                  AND MONTH(appoint_date) = ?
+                  AND is_call = ?
+                  AND staff_id = ?
+                  GROUP BY 
+                  FORMAT(appoint_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+                  FROM order_head A
+                  LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
+    WHERE YEAR(A.shipment_date) = ? AND A.is_status <> 'C' 
+    AND MONTH(A.shipment_date) = ? AND C.sales_channels_group_code = ?  
+    AND A.staff_id = ? AND C.is_new = ? AND B.so_no IS NULL
+    GROUP BY MONTH(A.shipment_date)
+    ORDER BY MONTH(A.shipment_date) ASC";
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count 
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND sales_channels_group_code = ? AND staff_id = ? AND status IN ($is_new_list)
                    GROUP BY b.customer_segment_name";
     $sqlcostsheet = "SELECT 
-    sales_channels_group_code,
-    is_new,
-    qt_no,
-    A.so_amount AS amount,
-    MONTH(A.qt_date) AS month
-FROM cost_sheet_head A
-    WHERE 
-        A.is_status <> 'C' 
-        AND YEAR(A.qt_date) = ? AND MONTH(A.qt_date) = ? AND sales_channels_group_code = ? AND staff_id = ? AND is_new = ?";
+                  FORMAT(qt_date, 'dd-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(qt_no) AS qt_no
+                  FROM 
+                  cost_sheet_head
+                  WHERE 
+                  is_status <> 'C' AND YEAR(qt_date) = ?
+                  AND MONTH(qt_date) = ?
+                  AND sales_channels_group_code = ?
+                  AND staff_id = ?
+                  AND is_new = ?
+                  GROUP BY 
+                  FORMAT(qt_date, 'dd-MM')
+                  ORDER BY 
+                  format_date ASC";
         $sqlregion = "SELECT 
         C.customer_segment_name AS segment,
         COUNT(CASE WHEN B.zone_code = '01' THEN A.province_code END) AS 'North',
@@ -809,11 +1365,20 @@ FROM cost_sheet_head A
         GROUP BY
         C.customer_segment_name";
     $params = array($year_no, $month_no, $channel, $Sales, $is_new);
-}*/
+}
 
 // Execute the first query
 $stmt = sqlsrv_query($objCon, $sqlrevenue, $params);
 if ($stmt === false) {
+    $errors = sqlsrv_errors();
+    error_log(print_r($errors, true)); // Log SQL errors for debugging
+    http_response_code(500); // Set HTTP status code to indicate internal server error
+    echo json_encode(["error" => "Failed to execute first query"]);
+    exit;
+}
+
+$stmtaccu = sqlsrv_query($objCon, $sqlrevenue_accu, $params);
+if ($stmtaccu === false) {
     $errors = sqlsrv_errors();
     error_log(print_r($errors, true)); // Log SQL errors for debugging
     http_response_code(500); // Set HTTP status code to indicate internal server error
@@ -827,6 +1392,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $revenueData[] = $row;
 }
 sqlsrv_free_stmt($stmt);
+
+$revenueaccuData = [];
+while ($row = sqlsrv_fetch_array($stmtaccu, SQLSRV_FETCH_ASSOC)) {
+    $revenueaccuData[] = $row;
+}
+sqlsrv_free_stmt($stmtaccu);
 
 // Execute the second query
 $stmt1 = sqlsrv_query($objCon, $sqlappoint, $params);
@@ -860,6 +1431,7 @@ while ($row = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
     $segmentData[] = $row;
 }
 sqlsrv_free_stmt($stmt2);
+
 
 $stmt3 = sqlsrv_query($objCon, $sqlcostsheet, $params);
 if ($stmt3 === false) {
@@ -920,7 +1492,8 @@ $data = [
     'segmentData' => $segmentData,
     'costsheetData' => $costsheetData,
     'regionData' => $regionData,
-    'orderData' => $orderData
+    'orderData' => $orderData,
+    'revenueaccuData' => $revenueaccuData
 ];
 
 header('Content-Type: application/json');

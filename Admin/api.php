@@ -24,6 +24,55 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
                    LEFT JOIN  so_customer_status B ON A.qt_no = B.qt_no
                    WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND is_status <> 'C'  AND B.so_no IS NULL
                    ORDER BY qt_date DESC";
+     $sqlrevenue = "SELECT 
+                    FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                    SUM(A.total_before_vat) AS so_amount,
+                    COUNT(A.so_no) AS so_no
+                    FROM 
+                    View_SO_SUM A
+                    WHERE 
+                    A.month_no = ?
+                    AND A.year_no = ?
+                    GROUP BY 
+                    FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                    ORDER BY 
+                    format_date ASC";
+     $sqlap = "SELECT 
+                    FORMAT(appoint_date, 'yyyy-MM') AS format_date,
+                    COUNT(CASE WHEN qt_no IS NULL AND is_status <> 4 THEN appoint_no END) AS appoint_no,
+                    COUNT(CASE WHEN qt_no IS NULL AND is_status = 4 THEN appoint_no END) AS specific_appoint_no
+                    FROM 
+                    appoint_head
+                    WHERE 
+                    month_no = ? AND year_no = ? AND qt_no IS NULL
+                    GROUP BY 
+                    FORMAT(appoint_date, 'yyyy-MM')
+                    ORDER BY 
+                    format_date ASC";
+     $sqlcostsheet = "SELECT 
+                  FORMAT(qt_date, 'yyyy-MM') AS format_date,
+	                SUM(so_amount)AS so_amount,
+                  COUNT(A.qt_no) AS qt_no,
+				  COUNT(CASE WHEN  is_prospect IS NULL    THEN A.qt_no END) AS Unknownss,
+				   COUNT(CASE WHEN  print_qt_count = 0   THEN A.qt_no END) AS Unknowns,
+				 COUNT(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN A.qt_no END) AS Unknown,
+				  SUM(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN so_amount END) AS Unknown_amount,
+				  COUNT(CASE WHEN  is_prospect = '05' THEN A.qt_no END) AS potential,
+				  SUM(CASE WHEN  is_prospect = '05' THEN so_amount END) AS potential_amount,
+				  COUNT(CASE WHEN  is_prospect = '04' THEN A.qt_no END) AS prospect,
+				  SUM(CASE WHEN  is_prospect = '04' THEN so_amount END) AS prospect_amount,
+				  COUNT(CASE WHEN  is_prospect = '06' 
+				  THEN A.qt_no END) AS pipeline,
+				  SUM(CASE WHEN  is_prospect = '06' THEN so_amount END) AS pipeline_amount
+                  FROM 
+                  cost_sheet_head A
+                  WHERE 
+                  is_status <> 'C'  AND MONTH(qt_date) = ?  AND YEAR(qt_date) = ? 
+				  AND  NOT EXISTS (SELECT * FROM so_detail B WHERE A.qt_no = B.qt_no)
+                  GROUP BY 
+                  FORMAT(qt_date, 'yyyy-MM')
+                  ORDER BY 
+                  format_date ASC";
                    $params = array($month_no, $year_no);
 }else{
     $sqlappoint = "SELECT FORMAT(A.appoint_date, 'dd-MM-yyy') As appoint_date,A.customer_name, A.qt_no,FORMAT(A.so_amount, 'N2') AS so_amount,pp.prospect_name,pp.prospect_code, A.remark,ms.status_name,ms.status_code,A.reasoning
@@ -33,6 +82,56 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
                    LEFT JOIN  so_customer_status B ON A.qt_no = B.qt_no
                    WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND A.staff_id = ?  AND is_status <> 'C'  AND B.so_no IS NULL
                    ORDER BY qt_date DESC";
+     $sqlap = "SELECT 
+     FORMAT(appoint_date, 'yyyy-MM') AS format_date,
+     COUNT(CASE WHEN qt_no IS NULL AND is_status <> 4 THEN appoint_no END) AS appoint_no,
+     COUNT(CASE WHEN qt_no IS NULL AND is_status = 4 THEN appoint_no END) AS specific_appoint_no
+     FROM 
+     appoint_head
+     WHERE 
+     month_no = ? AND year_no = ? AND staff_id = ? AND qt_no IS NULL
+     GROUP BY 
+     FORMAT(appoint_date, 'yyyy-MM')
+     ORDER BY 
+     format_date ASC";
+         $sqlcostsheet = "SELECT 
+         FORMAT(qt_date, 'yyyy-MM') AS format_date,
+           SUM(so_amount)AS so_amount,
+         COUNT(A.qt_no) AS qt_no,
+         COUNT(CASE WHEN  is_prospect IS NULL    THEN A.qt_no END) AS Unknownss,
+          COUNT(CASE WHEN  print_qt_count = 0   THEN A.qt_no END) AS Unknowns,
+ COUNT(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN A.qt_no END) AS Unknown,
+			SUM(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN so_amount END) AS Unknown_amount,
+         COUNT(CASE WHEN  is_prospect = '05' THEN A.qt_no END) AS potential,
+         SUM(CASE WHEN  is_prospect = '05' THEN so_amount END) AS potential_amount,
+         COUNT(CASE WHEN  is_prospect = '04' THEN A.qt_no END) AS prospect,
+         SUM(CASE WHEN  is_prospect = '04' THEN so_amount END) AS prospect_amount,
+         COUNT(CASE WHEN  is_prospect = '06' 
+         THEN A.qt_no END) AS pipeline,
+         SUM(CASE WHEN  is_prospect = '06' THEN so_amount END) AS pipeline_amount
+         FROM 
+         cost_sheet_head A
+         WHERE 
+         is_status <> 'C'  AND MONTH(qt_date) = ?  AND YEAR(qt_date) = ? AND staff_id = ? 
+         AND  NOT EXISTS (SELECT * FROM so_detail B WHERE A.qt_no = B.qt_no)
+         GROUP BY 
+         FORMAT(qt_date, 'yyyy-MM')
+         ORDER BY 
+         format_date ASC";
+                    $sqlrevenue = "SELECT 
+                    FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
+                    SUM(A.total_before_vat) AS so_amount,
+                    COUNT(A.so_no) AS so_no
+                    FROM 
+                    View_SO_SUM A
+                    WHERE 
+                    A.month_no = ?
+                    AND A.year_no = ?
+                    AND A.staff_id = ?
+                    GROUP BY 
+                    FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
+                    ORDER BY 
+                    format_date ASC";
                    $params = array($month_no, $year_no, $Sales);
 }
 
@@ -42,35 +141,67 @@ if ($stmt === false) {
     die(json_encode(["error" => sqlsrv_errors()]));
 }
 
-$data = [];
+$tableData = [];
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-    $appoint_date = isset($row['appoint_date']) ? htmlspecialchars($row['appoint_date']) : '';
-    $customername = isset($row['customer_name']) ? htmlspecialchars($row['customer_name']) : '';
-    $qt_no = isset($row['qt_no']) ? htmlspecialchars($row['qt_no']) : '';
-    $so_amount = isset($row['so_amount']) ? htmlspecialchars($row['so_amount']) : '';
-    $prospect_name = isset($row['prospect_name']) ? htmlspecialchars($row['prospect_name']) : '';
-    $prospect_code = isset($row['prospect_code']) ? htmlspecialchars($row['prospect_code']) : '';
-    $remark = isset($row['remark']) ? htmlspecialchars($row['remark']) : '';
-    $status_name = isset($row['status_name']) ? htmlspecialchars($row['status_name']) : '';
-    $status_code = isset($row['status_code']) ? htmlspecialchars($row['status_code']) : '';
-    $reasoning = isset($row['reasoning']) ? htmlspecialchars($row['reasoning']) : '';
-    $data[] = array(
-        "date" => $appoint_date,
-        "name" =>  $customername,
-        "qt_no" => $qt_no,
-        "so_amount" => $so_amount,
-        "prospect_name" => $prospect_name,
-        "prospect_code" => $prospect_code,
-        "remark" => $remark,
-        "status_name" => $status_name,
-        "status_code" => $status_code,
-        "reasoning" => $reasoning
-    );
+    $tableData[] = $row;
 }
 
+$stmtap = sqlsrv_query($objCon, $sqlap, $params);
+if ($stmtap === false) {
+    $errors = sqlsrv_errors();
+    error_log(print_r($errors, true)); // Log SQL errors for debugging
+    http_response_code(500); // Set HTTP status code to indicate internal server error
+    echo json_encode(["error" => "Failed to execute first query"]);
+    exit;
+}
+
+// Initialize an array to hold the first query results
+$apData = [];
+while ($row = sqlsrv_fetch_array($stmtap, SQLSRV_FETCH_ASSOC)) {
+    $apData[] = $row;
+}
+
+$stmtqt = sqlsrv_query($objCon, $sqlcostsheet, $params);
+if ($stmtqt === false) {
+    $errors = sqlsrv_errors();
+    error_log(print_r($errors, true)); // Log SQL errors for debugging
+    http_response_code(500); // Set HTTP status code to indicate internal server error
+    echo json_encode(["error" => "Failed to execute first query"]);
+    exit;
+}
+
+// Initialize an array to hold the first query results
+$qtData = [];
+while ($row = sqlsrv_fetch_array($stmtqt, SQLSRV_FETCH_ASSOC)) {
+    $qtData[] = $row;
+}
+
+$stmt1 = sqlsrv_query($objCon, $sqlrevenue, $params);
+if ($stmt1 === false) {
+    $errors = sqlsrv_errors();
+    error_log(print_r($errors, true)); // Log SQL errors for debugging
+    http_response_code(500); // Set HTTP status code to indicate internal server error
+    echo json_encode(["error" => "Failed to execute first query"]);
+    exit;
+}
+
+// Initialize an array to hold the first query results
+$revenueData = [];
+while ($row = sqlsrv_fetch_array($stmt1, SQLSRV_FETCH_ASSOC)) {
+    $revenueData[] = $row;
+}
+$data = [
+    'revenueData' => $revenueData,
+    'apData' => $apData,
+    'qtData' => $qtData,
+    'tableData' => $tableData
+];
+
 sqlsrv_free_stmt($stmt);
+sqlsrv_free_stmt($stmtap);
+sqlsrv_free_stmt($stmtqt);
+sqlsrv_free_stmt($stmt1);
 sqlsrv_close($objCon);
 
 header('Content-Type: application/json');
 echo json_encode($data);
-?>

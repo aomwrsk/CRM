@@ -9,8 +9,13 @@ if ($objCon === false) {
     die(json_encode(["error" => sqlsrv_errors()]));
 }
 
-    $sqlis = "SELECT qt_no, issue_no,issue_date,customer_code,customer_name
-                   FROM issue_head ORDER BY issue_no DESC";
+$sqlis = "SELECT qt_no, 
+issue_no,
+issue_date,
+customer_code,
+customer_name
+FROM issue_head 
+ORDER BY issue_no DESC";
 
 $sqlor = "SELECT A.order_no,
 shipment_date,

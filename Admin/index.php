@@ -1,7 +1,9 @@
-<?php include('header.php');
+<?php 
+include('header.php');
 $name = htmlspecialchars($name);
 $staff = htmlspecialchars($staff);
 $level = htmlspecialchars($level);
+$Role = htmlspecialchars($role);
 if($staff === 0 || $level <= 1){
   echo '<script>alert("Can not enter this site");window.location="/CRM/pages-login.html";</script>';
 }
@@ -282,10 +284,22 @@ if($staff === 0 || $level <= 1){
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="index.php">
+      <a class="nav-link collapsed" data-bs-target="#dashboards-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
+          <span>Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
+        <ul id="dashboards-nav" class="nav-content show" data-bs-parent="#sidebar-nav">
+        <li>
+            <a href="index.php" class="active">
+              <i class="bi bi-circle"></i><span>CRM</span>
+            </a>
+          </li>
+          <li>
+            <a href="index-Maintanance.php">
+              <i class="bi bi-circle"></i><span>Maintanance</span>
+            </a>
+          </li>
+        </ul>
       </li>
 
       <li class="nav-item">
@@ -640,7 +654,7 @@ if($staff === 0 || $level <= 1){
     </div-->
 
     <div class="card-body">
-      <h5 class="card-title">Quatation</h5>
+      <h5 class="card-title">Quotation</h5>
 
       <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -737,15 +751,14 @@ if($staff === 0 || $level <= 1){
                     <li class="dropdown-header text-start">
                       <h6>Filter</h6>
                     </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="fetchData('month')">This Month</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="fetchData('year')">This Year</a></li>
+                    <input type="text" id="dataContainer">
                   </ul>
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Reports <span>/Today</span></h5>
+                  <h5 class="card-title">Reports <!--span>|Today</span--></h5>
 
                   <!-- Line Chart -->
                   <div id="reportsChart"></div>
@@ -780,7 +793,7 @@ if($staff === 0 || $level <= 1){
       <table id="region" class="table table-borderless datatable">
         <thead>
           <tr>
-            <th scope="col">Segment</th>
+            <th scope="col">Product</th>
             <th scope="col">North</th>
             <th scope="col">Central</th>
             <th scope="col">East</th>
@@ -911,7 +924,7 @@ if($staff === 0 || $level <= 1){
           <div class="card">
             
             <div class="card-body pb-0">
-              <h5 class="card-title">Segment</h5>
+              <h5 class="card-title">Product</h5>
               <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
             </div>
             

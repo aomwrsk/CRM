@@ -22,7 +22,10 @@ $staff = isset($_GET['staff']) ? $_GET['staff'] : NULL;
 if ($year_no <> 0 && $month_no == 0  && $is_new == 0) {
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_code FROM appoint_head WHERE year_no = ? AND staff_id = ?";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND a.staff_id = ?
@@ -60,7 +63,10 @@ GROUP BY
 }elseif($year_no <> 0 && $month_no <> 0 && $is_new == 0){
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ? AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND staff_id = ?";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND staff_id = ?
@@ -106,7 +112,10 @@ $is_new_list = "'" . implode("','", $is_new_array) . "'";
 
     $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND status IN ($is_new_list) AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND staff_id = ?";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND staff_id = ? AND status IN ($is_new_list)
@@ -151,7 +160,10 @@ $is_new_list = "'" . implode("','", $is_new_array) . "'";
 
         $sqlrevenue = "SELECT so_no,total_before_vat FROM View_SO_SUM WHERE year_no = ? AND month_no = ?  AND status IN ($is_new_list) AND staff_id = ?";
     $sqlappoint = "SELECT appoint_no,customer_name,province_name FROM appoint_head WHERE year_no = ? AND month_no = ? AND staff_id = ?";
-    $sqlsegment = "SELECT b.customer_segment_name, COUNT(a.customer_segment_code) AS segment_count 
+    $sqlsegment = "SELECT b.customer_segment_name, 
+                  FORMAT(SUM(total_before_vat), 'N2') AS total_before_vat, 
+                  FORMAT(SUM(total_before_vat) / COUNT(a.customer_segment_code), 'N2') AS aov, 
+                  COUNT(a.customer_segment_code) AS segment_count
                    FROM View_SO_SUM a
                    LEFT JOIN ms_customer_segment b ON a.customer_segment_code = b.customer_segment_code
                    WHERE a.year_no = ? AND month_no = ? AND staff_id = ? AND status IN ($is_new_list)

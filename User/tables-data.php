@@ -578,8 +578,230 @@ if($staff === 0 || $level < 1){
               
             </div>
           </div>
+
+          <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+          <div class="row">
+
+            <!-- Sales Card -->
+            <div class="col-xxl-2 col-md-4">
+              <div class="card info-card customers-card">
+
+                <!--div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#" id= "aponline" value="I">Online</a></li>
+                    <li><a class="dropdown-item" href="#" id ="apoffline" value="O">Offline</a></li>
+                  </ul>
+                </div-->
+
+                <div class="card-body">
+                  <h5 class="card-title">Appoint</h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-people"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6 id="appoint"></h6>
+                      <!--span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase from last month</span-->
+                      <span id="apNoqt" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">ราย</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Sales Card -->
+
+<!-- Customers Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card sales-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">CostSheet</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="qt_number"></h6>
+          <span id="qt_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+
+<!-- Customers Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card sales-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Potential</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="qt_potential_number"></h6>
+          <span id="qt_potential_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+<!-- Customers Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card sales-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Prospect</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="qt_prospect_number"></h6>
+          <span id="qt_prospect_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+<!-- Customers Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card sales-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Pipeline</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="qt_pipeline_number"></h6>
+          <span id="qt_pipeline_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+
+
+
+<!-- Revenue Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card revenue-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Revenue</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="so_number"></h6>
+          <span id="revenue" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- End Revenue Card -->
+          </div>
+    </section>
+
               <!-- Table with stripped rows -->
-              <form action="edit-status.php" method="post" enctype="multipart/form-data" class="row g-3">
+              <form action="edit_status.php" method="post" enctype="multipart/form-data" class="row g-3">
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary" onclick="return confirmUpdate();">Submit</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
