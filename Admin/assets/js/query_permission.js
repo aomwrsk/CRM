@@ -57,7 +57,8 @@ function Table(data) {
       { text: 'MK Online', value: 'MK Online' },
       { text: 'MK Offline', value: 'MK Offline' },
       { text: 'MK', value: 'MK' },
-      { text: 'Super Admin', value: 'SUPER ADMIN'}
+      { text: 'Super Admin', value: 'SUPER ADMIN'},
+      { text: 'OPL', value: 'OPL'}
     ];
 
     // Add the current status as an option
@@ -66,7 +67,8 @@ function Table(data) {
         text: row.Role === 'MK' ? 'MK' :
               row.Role === 'MK Online' ? 'MK Online' :
               row.Role === 'SUPER ADMIN' ? 'SUPER ADMIN' :
-              row.Role === 'MK Offline' ? 'MK Offline' : 'Unknown',
+              row.Role === 'MK Offline' ? 'MK Offline' : 
+              row.Role === 'OPL' ? 'OPL' : 'Unknown',
         value: row.Role
     };
     

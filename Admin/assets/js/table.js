@@ -28,13 +28,17 @@ function updateTable(data) {
   let totalap = 0;
   let totalapNoqt = 0;
   let totalSumunknown = 0;
+  let totalSumlostunknown = 0;
   let totalvalueunknown = 0;
   let totalSumpotential = 0;
+  let totalSumlostpotential = 0;
   let totalvaluepotential = 0;
   let totalvaluepropect = 0;
   let totalSumpropect = 0;
+  let totalSumlostpropect = 0;
   let totalvaluepipeline = 0;
   let totalSumpipeline= 0;
+  let totalSumlostpipeline= 0;
   let totalSum = 0;
   let totalSumso = 0;
 
@@ -51,12 +55,16 @@ function updateTable(data) {
   data.qtData.forEach(qt => {
     totalvalueunknown += parseFloat(qt.Unknown)|| 0;
     totalSumunknown += parseFloat(qt.Unknown_amount)|| 0;
+    totalSumlostunknown += parseFloat(qt.lost_Unknown_amount)|| 0;
     totalvaluepotential += parseFloat(qt.potential)|| 0;
     totalSumpotential += parseFloat(qt.potential_amount)|| 0;
+    totalSumlostpotential += parseFloat(qt.lost_potential_amount)|| 0;
     totalvaluepropect += parseFloat(qt.prospect)|| 0;
     totalSumpropect += parseFloat(qt.prospect_amount)|| 0;
+    totalSumlostpropect += parseFloat(qt.lost_prospect_amount)|| 0;
     totalvaluepipeline += parseFloat(qt.pipeline)|| 0;
     totalSumpipeline += parseFloat(qt.pipeline_amount)|| 0;
+    totalSumlostpipeline += parseFloat(qt.lost_pipeline_amount)|| 0;
     });
 
         const countElementap = document.getElementById('appoint');
@@ -67,18 +75,30 @@ function updateTable(data) {
         countElementapNoqt.textContent = totalapNoqt.toLocaleString('en-US', {
         }); 
 
-        const UnknownElement = document.getElementById('qt_value');
+        /*const UnknownElement = document.getElementById('qt_value');
         UnknownElement.textContent = totalSumunknown.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
+
+        const UnknownElement2 = document.getElementById('qt_lost_value');
+        UnknownElement2.textContent = totalSumlostunknown.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }); 
 
         const UnknownElement1 = document.getElementById('qt_number');
         UnknownElement1.textContent = totalvalueunknown.toLocaleString('en-US', {
-        }); 
+        }); */
 
         const potentialElement = document.getElementById('qt_potential_value');
         potentialElement.textContent = totalSumpotential.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
+
+        const potentialElement2 = document.getElementById('qt_potential_lost_value');
+        potentialElement2.textContent = totalSumlostpotential.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }); 
@@ -93,12 +113,24 @@ function updateTable(data) {
             maximumFractionDigits: 2
         }); 
 
+        const propectElement2 = document.getElementById('qt_prospect_lost_value');
+        propectElement2.textContent = totalSumlostpropect.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
+
         const propectElement1 = document.getElementById('qt_prospect_number');
         propectElement1.textContent = totalvaluepropect.toLocaleString('en-US', {
         });  
 
         const pipelineElement = document.getElementById('qt_pipeline_value');
         pipelineElement.textContent = totalSumpipeline.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
+
+        const pipelineElement2 = document.getElementById('qt_pipeline_lost_value');
+        pipelineElement2.textContent = totalSumlostpipeline.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }); 

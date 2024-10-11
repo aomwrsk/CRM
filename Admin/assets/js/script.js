@@ -20,7 +20,6 @@ fetch(url)
   console.log('Data:', data); // Log the data to check the response
   updateTable(data);
   updateChart(data.segmentData);
-  updateReport(data);
 
 })
 .catch(error => console.error('Error fetching data:', error));
@@ -88,11 +87,17 @@ function updateTable(data) {
 
        
         let totalSumap = 0;
+        let totalSumap_quality = 0;
         data.appointData.forEach(ap => {
           totalSumap += parseFloat(ap.appoint_no) || 0;
+          totalSumap_quality += parseFloat(ap.appoint_quality) || 0;
         });
         const countElement = document.getElementById('appoint');
         countElement.textContent = totalSumap.toLocaleString('en-US', {
+        }); 
+
+        const countElementAP = document.getElementById('ap_quality');
+        countElementAP.textContent = totalSumap_quality.toLocaleString('en-US', {
         }); 
 
 
@@ -333,70 +338,4 @@ for (let year = currentYear; year >= startYear; year--) {
   option.text = year;
   yearSelect.appendChild(option);
 }
-function updateReport(data) {
-  const appoints = data.appointData.map(item => item.appoint_no);
-  const costsheet = data.costsheetData.map(item => item.qt_no);
-  const saleorder = data.revenueData.map(item => item.so_no);
-  const saleorderAccu = data.revenueaccuData.map(item => parseFloat(item.accumulated_so).toFixed(0));
-  const dateAP = data.revenueaccuData.map(item => item.format_date);
-  const month_no = document.getElementById('month').value;
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", 
-    "July", "August", "September", "October", "November", "December"
-  ];
-  if(month_no == 0){
-    monthName = dateAP;
-  }else{  
-    monthName = dateAP;
-}
-  new ApexCharts(document.querySelector("#reportsChart"), {
-    series: [/*{
-      name: 'Appoints',
-      data: appoints,
-    }, {
-      name: 'Quotation',
-      data: costsheet,
-    }, */{
-      name: 'Revenue',
-      data: saleorderAccu,
-    }],
-    chart: {
-      height: 350,
-      type: 'area',
-      toolbar: {
-        show: false
-      },
-    },
-    markers: {
-      size: 4
-    },
-    colors: [/*'#ff771d', '#4154f1', */'#2eca6a'],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.3,
-        opacityTo: 0.4,
-        stops: [0, 90, 100]
-      }
-    },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      curve: 'smooth',
-      width: 2
-    },
-    xaxis: {
-      type: 'category',
-      categories: monthName
-    },
-    tooltip: {
-      y: {
-        formatter: function(value) {
-          return value.toLocaleString(undefined, { style: 'currency', currency: 'THB' });
-        },
-      },
-    }
-  }).render();
-}
+

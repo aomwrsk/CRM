@@ -90,12 +90,12 @@ function updateTable(data) {
             maximumFractionDigits: 2
         }) + ' %';
                 // Calculate and display the ratio (revenue per sales order)
-const ratio = totalSum / uniqueso.size;
-const ratioElement = document.getElementById('AOV');
-ratioElement.textContent = ratio.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-});
+        const ratio = totalSum / uniqueso.size;
+        const ratioElement = document.getElementById('AOV');
+        ratioElement.textContent = ratio.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
 
 const percentage = (ratio / totalSum) * 100;
 const percentageElement = document.getElementById('AOV_percent');

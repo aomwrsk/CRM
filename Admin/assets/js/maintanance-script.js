@@ -16,6 +16,7 @@ fetch(url)
 .then(data => {
   console.log('Data:', data); // Log the data to check the response
   updateTable(data);
+  BarChart(data);
   updateChart(data.graphpieData);
   updateReport(data);
 
@@ -28,37 +29,61 @@ fetch(url)
 function updateTable(data) {
         let totalSum = 0;
         let totalSumbox = 0;
-        data.boxData.forEach(box => {
-            totalSum += parseFloat(box.total_amount)|| 0;
-            totalSumbox += parseFloat(box.vehicle_code)|| 0;
-        });
-
-        const revenueElement = document.getElementById('container_value');
-        revenueElement.textContent = totalSum.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }); 
-
-        const countElement2 = document.getElementById('container_number');
-        countElement2.textContent = totalSumbox.toLocaleString('en-US', {
-        });  
-
-
         let totalSum1 = 0;
         let totalSum2 = 0;
-        data.vehicleData.forEach(vehicle => {
-          totalSum1 += parseFloat(vehicle.total_amount)|| 0;
-          totalSum2 += parseFloat(vehicle.vehicle_code)|| 0;
+        let totalSum3 = 0;
+        let totalSum4 = 0;
+        let totalSum5 = 0;
+        let totalSum6 = 0;
+        data.boxData.forEach(box => {
+            totalSum += parseFloat(box.ct_amount) || 0;
+            totalSumbox += parseFloat(box.CT) || 0;
+            totalSum1 += parseFloat(box.tp_amount)|| 0;
+            totalSum2 += parseFloat(box.TP)|| 0;
+            totalSum3 += parseFloat(box.oc_amount)|| 0;
+            totalSum4 += parseFloat(box.OC)|| 0;
+            totalSum5 += parseFloat(box.cl_amount)|| 0;
+            totalSum6 += parseFloat(box.CL)|| 0;
         });
-        const qtElement = document.getElementById('vehicle_value');
-        qtElement.textContent = totalSum1.toLocaleString('en-US', {
+          
+          const revenueElement = document.getElementById('container_value');
+          revenueElement.textContent = totalSum.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+          }); 
+  
+          const countElement2 = document.getElementById('container_number');
+          countElement2.textContent = totalSumbox.toLocaleString('en-US', {
+          });  
+  
+        const Element = document.getElementById('tp_value');
+        Element.textContent = totalSum1.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }); 
 
+        const countElement = document.getElementById('tp_number');
+        countElement.textContent = totalSum2.toLocaleString('en-US', {
+        }) ; 
 
-        const countElement1 = document.getElementById('vehicle_number');
-        countElement1.textContent = totalSum2.toLocaleString('en-US', {
+        const Element1 = document.getElementById('oc_value');
+        Element1.textContent = totalSum3.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
+
+        const countElement1 = document.getElementById('oc_number');
+        countElement1.textContent = totalSum4.toLocaleString('en-US', {
+        }) ; 
+
+        const Element2 = document.getElementById('cl_value');
+        Element2.textContent = totalSum5.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }); 
+
+        const countElement3 = document.getElementById('cl_number');
+        countElement3.textContent = totalSum6.toLocaleString('en-US', {
         }) ; 
 /*
                 // Calculate and display the ratio (revenue per sales order)
@@ -115,16 +140,14 @@ const tbody = document.querySelector('#region tbody');
     function updateChart(graphpieData) {
       // Prepare chart data with segment_count as the value for the pie chart
       const chartData = graphpieData.map(item => ({
-        value: item.Countma, // This will be the displayed value in the pie chart
-        name: item.vehicle_code, // Segment name for the pie slices
-        total_before_vat: item.total_amount, // Include total_before_vat for the tooltip
+        value: item.total_amount, // This will be the displayed value in the pie chart
+        name: item.repair_name, // Segment name for the pie slices
+        total_before_vat: item.total_amounts, // Include total_before_vat for the tooltip
       }));
     
       // Initialize chart on the element with ID 'trafficChart'
-      const chart = echarts.init(document.querySelector("#trafficChart"));
-    
       // Set chart options
-      chart.setOption({
+      echarts.init(document.querySelector("#pieChart")).setOption({
         tooltip: {
           trigger: 'item',
           formatter: function (params) {
@@ -138,116 +161,73 @@ const tbody = document.querySelector('#region tbody');
 const percentage = params.percent.toFixed(2);
             return `
               <b>${params.name}</b><br>
-              Product qty: ${params.value}<br>
-              Ratio: ${percentage} %<br>
               Value: ${formattedValue}<br>
+              Ratio: ${percentage} %      
             `;
           }
         },
         legend: {
-          top: '5%',
-          left: 'center'
+          orient: 'vertical',
+          left: 'left'
         },
         series: [{
           name: 'Maintanance',
           type: 'pie',
-          radius: ['40%', '70%'],
+          radius: ['50%'],
           avoidLabelOverlap: false,
           label: {
             show: false,
             position: 'center'
           },
           emphasis: {
-            label: {
-              show: true,
-              fontSize: '18',
-              fontWeight: 'bold'
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
             }
           },
           labelLine: {
             show: false
           },
-          data: chartData // Use the prepared chartData
+          data: chartData,
         }]
       });
     }
+    function BarChart(data) {
+      let names = [];
+      let values = [];
     
-
-    /*function BarChart(RegionData) {
-      const regionCategories = ['North', 'Central', 'East', 'North-East', 'West', 'South'];
-      const Data = RegionData.map(item => ({
-        name: item.segment,
-        data: regionCategories.map(region => item[region] || 0) // Ensure data is an array of region counts
-    }));
-    
-      const chart = new ApexCharts(document.querySelector("#columnChart"), {
-        chart: {
-          type: 'bar',
-          height: 350
-        },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            columnWidth: '55%',
-            endingShape: 'rounded'
-          },
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          show: true,
-          width: 2,
-          colors: ['transparent']
-        },
-        xaxis: {
-          categories: regionCategories,
-        },
-        yaxis: {
-          title: {
-            text: 'Customers'
-          }
-        },
-        fill: {
-          opacity: 1
-        },
-        tooltip: {
-          y: {
-            formatter: function(val) {
-              return val + " customers";
-            }
-          }
-        },
-        legend: {
-          top: '5%',
-          left: 'center'
-        },
-        series: Data
+      // Populate arrays from graphData
+      data.graphpieData.forEach(bar => {
+        names.push(bar.repair_name);  // Categories (names) for x-axis
+        values.push(bar.total_amount); // Values for the bars
       });
-    
-      chart.render();
-    }*/
+        new ApexCharts(document.querySelector("#barChart"), {
+          series: [{
+            data: values
+          }],
+          chart: {
+            type: 'bar',
+            height: 350
+          },
+          plotOptions: {
+            bar: {
+              borderRadius: 4,
+              horizontal: true,
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          xaxis: {
+            categories: names,
+          }
+        }).render();
+
+    }
     document.addEventListener('DOMContentLoaded', fetchYear);
 
-    /*document.addEventListener('DOMContentLoaded', (event) => {
-      fetch('staff_id.php')
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error(`HTTP error! Status: ${response.status}`);
-              }
-              return response.json();
-          })
-          .then(data => {
-              const selectElement = document.getElementById('Sales');
-              data.forEach(item => {
-                  const option = document.createElement('option');
-                  option.value = item.staff_id;
-                  option.textContent = item.fname_e || item.nick_name || item.staff_id; 
-                  selectElement.appendChild(option);
-              });
-          })
-          .catch(error => console.error('Error fetching data:', error));
-  });*/
+
 
   const monthSelect = document.getElementById('month');
   const monthNames = [
@@ -277,37 +257,24 @@ for (let year = currentYear; year >= startYear; year--) {
   yearSelect.appendChild(option);
 }
 function updateReport(data) {
-  const box = data.boxData.map(item => item.appoint_no);
-  const vehicle = data.graphData.map(item => item.total_amount);
-  const dateAP = data.graphData.map(item => item.format_date);
-  const month_no = document.getElementById('month').value;
+  const formatDate = data.graphData.map(item => item.format_date);
+  const total_amount_2024 = data.graphData.map(item => item.total_amount);
   const monthNames = [
-    "January", "February", "March", "April", "May", "June", 
-    "July", "August", "September", "October", "November", "December"
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
-  const target = [
-    "160000", "160000", "160000", "160000", "160000", "160000", 
-    "160000", "160000", "160000", "160000", "160000", "160000"
-  ];
-  const formattedValue = target.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-  if(month_no == 0){
-    monthName = monthNames;
-  }else{  
-    monthName = dateAP;
-}
+  const target = data.graphData.map(item => item.target_ma);
+ 
   new ApexCharts(document.querySelector("#reportsChart"), {
     series: [/*{
       name: 'Appoints',
       data: appoints,
     }, */{
-      name: 'Target',
+      name: 'เป้าหมายค่าซ่อม',
       data: target,
     }, {
-      name: 'Maintanance',
-      data: vehicle,
+      name: 'ค่าซ่อมจริง',
+      data: total_amount_2024,
     }],
     chart: {
       height: 350,
@@ -319,7 +286,7 @@ function updateReport(data) {
     markers: {
       size: 4
     },
-    colors: [/*'#ff771d',*/ '#4154f1', '#2eca6a'],
+    colors: ['#0d6efd', '#ff771d', '#2eca6a'],
     fill: {
       type: "gradient",
       gradient: {
@@ -338,7 +305,7 @@ function updateReport(data) {
     },
     xaxis: {
       type: 'category',
-      categories: monthName
+      categories: formatDate
     },
     tooltip: {
       y: {

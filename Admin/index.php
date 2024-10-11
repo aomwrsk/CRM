@@ -574,7 +574,7 @@ if($staff === 0 || $level <= 1){
               <label for="channel">Channel</label>
             </div>
           </div>
-      <div class="col-xxl-2 col-md-4">
+      <div class="col-xxl-3 col-md-4">
         <div class="form-floating mb-3">
           <select class="form-select" id="month" aria-label="Month"onchange="fetchYear()">
             <option value="0">-</option>
@@ -582,7 +582,7 @@ if($staff === 0 || $level <= 1){
           <label for="month">Month</label>
         </div>
       </div>
-      <div class="col-xxl-2 col-md-4">
+      <div class="col-xxl-3 col-md-4">
         <div class="form-floating mb-3">
           <select class="form-select" id="year" aria-label="Year"onchange="fetchYear()">
           </select>
@@ -603,7 +603,7 @@ if($staff === 0 || $level <= 1){
           <div class="row">
 
             <!-- Sales Card -->
-            <div class="col-xxl-4 col-md-6">
+            <div class="col-xxl-6 col-md-6">
               <div class="card info-card customers-card">
 
                 <!--div class="filter">
@@ -627,7 +627,7 @@ if($staff === 0 || $level <= 1){
                     </div>
                     <div class="ps-3">
                       <h6 id="appoint"></h6>
-                      <!--span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase from last month</span-->
+                      <span id="ap_quality"class="text-success large pt-1 fw-bold"></span>
 
                     </div>
                   </div>
@@ -637,7 +637,7 @@ if($staff === 0 || $level <= 1){
             </div><!-- End Sales Card -->
 
 <!-- Customers Card -->
-<div class="col-xxl-4 col-md-6">
+<div class="col-xxl-6 col-md-6">
   <div class="card info-card sales-card">
 
     <!--div class="filter">
@@ -673,7 +673,7 @@ if($staff === 0 || $level <= 1){
 </div><!-- End Customers Card -->
 
 <!-- Revenue Card -->
-<div class="col-xxl-4 col-md-6">
+<div class="col-xxl-6 col-md-6">
   <div class="card info-card revenue-card">
 
     <!--div class="filter">
@@ -708,7 +708,7 @@ if($staff === 0 || $level <= 1){
 </div><!-- End Revenue Card -->
 
 <!-- Revenue Card -->
-<div class="col-xxl-4 col-md-6">
+<div class="col-xxl-6 col-md-6">
   <div class="card info-card revenue-card">
 
     <!--div class="filter">
@@ -749,23 +749,37 @@ if($staff === 0 || $level <= 1){
                   <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                   <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
+                      <h6>Product</h6>
                     </li>
-                    <li><a class="dropdown-item" href="#" onclick="fetchData('month')">This Month</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="fetchData('year')">This Year</a></li>
-                    <input type="text" id="dataContainer">
+                    <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="999" onclick="fetchProduct(this)" >All</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="00" onclick="fetchProduct(this)">N/A</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="01" onclick="fetchProduct(this)">กากตะกอน-ฝุ่นทราย</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="02" onclick="fetchProduct(this)">Product off spec</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="03" onclick="fetchProduct(this)">ขยะอันตราย</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="04" onclick="fetchProduct(this)">Cleanning</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="05" onclick="fetchProduct(this)">Cleaning + กำจัด</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"  style="cursor: pointer;" data-segment-no="99" onclick="fetchProduct(this)">อื่น ๆ</a>
+                  </li>
                   </ul>
                 </div>
-
                 <div class="card-body">
-                  <h5 class="card-title">Reports <!--span>|Today</span--></h5>
-
-                  <!-- Line Chart -->
+                  <h5 class="card-title">Revenue Movement <!--span>|Today</span--></h5>
                   <div id="reportsChart"></div>
-
-                 
-                  <!-- End Line Chart -->
-
                 </div>
 
               </div>
@@ -968,7 +982,7 @@ if($staff === 0 || $level <= 1){
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
   <script src="assets/js/script.js"></script>
-  <!--script src="assets/js/report.js"></script-->
+  <script src="assets/js/report.js"></script>
 </body>
 
 </html>

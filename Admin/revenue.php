@@ -35,74 +35,17 @@ GROUP BY
     FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
 ORDER BY 
     format_date ASC";
-     $sqlrevenue_accu = "SELECT 
-    FORMAT(DATEFROMPARTS(A.year_no, A.month_no, 1), 'yyyy-MM') AS format_date,
-    CASE
-        WHEN A.month_no = 2 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2))
-		 WHEN A.month_no = 3 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3))
-		WHEN A.month_no = 4 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4))
-		WHEN A.month_no = 5 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5))
-		WHEN A.month_no = 6 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6))
-		WHEN A.month_no = 7 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7))
-		WHEN A.month_no = 8 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8))
-		WHEN A.month_no = 9 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9))
-		WHEN A.month_no = 10 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-		WHEN A.month_no = 11 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
-		WHEN A.month_no = 12 THEN 
-            (SELECT SUM(A2.total_before_vat) 
-             FROM View_SO_SUM A2 
-             WHERE A2.year_no = A.year_no AND A2.month_no IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
-        ELSE SUM(A.total_before_vat)
-    END AS accumulated_so,
-    COUNT(A.so_no) AS so_no
-FROM 
-    View_SO_SUM A
-WHERE 
-    A.year_no = ?
-GROUP BY 
-    FORMAT(DATEFROMPARTS(A.year_no, A.month_no, 1), 'dd-MM'), A.month_no, A.year_no
-ORDER BY 
-    format_date ASC;";
     $sqlappoint = "SELECT 
-    FORMAT(appoint_date, 'yyyy-MM') AS format_date,
-    COUNT(appoint_no) AS appoint_no
-FROM 
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
     appoint_head
-WHERE 
-    YEAR(appoint_date) = ?
-GROUP BY 
-    FORMAT(appoint_date, 'yyyy-MM')
-ORDER BY 
+    WHERE 
+     year_no = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
     format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                 FROM order_head A
@@ -164,35 +107,25 @@ GROUP BY
                   FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
                   ORDER BY 
                   format_date ASC";
-    $sqlrevenue_accu = "SELECT 
-    FORMAT(shipment_date, 'dd-MM') AS format_date,
-    SUM(A.total_before_vat) AS accumulated_so,
-    COUNT(A.so_no) AS so_no
-                  FROM 
-                      View_SO_SUM A
-                  WHERE 
-                      A.year_no = ? AND A.month_no = ?
-                  GROUP BY 
-                      FORMAT(shipment_date, 'dd-MM'), A.month_no, A.year_no,shipment_date
-                  ORDER BY 
-                      YEAR(shipment_date) ASC, month(shipment_date)";
     $sqlappoint = "SELECT 
                   FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
+                  COUNT(appoint_no) AS appoint_no,
+                  CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
                   FROM 
                   appoint_head
                   WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
+                   year_no = ?
+                  AND month_no = ?
                   GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
+                  FORMAT(appoint_date, 'dd-MM'), is_status
                   ORDER BY 
                   format_date ASC";
-    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
+    $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(C.so_amount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
+                  LEFT JOIN cost_sheet_head C ON A.qt_no = C.qt_no
                   WHERE YEAR(A.shipment_date) = ? AND MONTH(A.shipment_date) = ? 
-                  AND is_status <> 'C'
+                  AND A.is_status <> 'C'
                   AND B.so_no IS NULL
                   GROUP BY MONTH(A.shipment_date)
                   ORDER BY MONTH(A.shipment_date) ASC";
@@ -252,16 +185,17 @@ GROUP BY
                   format_date ASC";
     $sqlappoint = "SELECT 
                   FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
+                  COUNT(appoint_no) AS appoint_no,
+                  CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
                   FROM 
-                      appoint_head
+                  appoint_head
                   WHERE 
-                      YEAR(appoint_date) = ?
-                      AND is_call = ?
+                   year_no = ?
+                  AND is_call = ?
                   GROUP BY 
-                      FORMAT(appoint_date, 'dd-MM')
+                  FORMAT(appoint_date, 'dd-MM'), is_status
                   ORDER BY 
-                      format_date ASC";
+                  format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -325,17 +259,18 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                      appoint_head
-                  WHERE 
-                      YEAR(appoint_date) = ?
-                      AND staff_id = ?
-                  GROUP BY 
-                      FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                      format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+    AND staff_id = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -403,17 +338,18 @@ GROUP BY
                   FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
                   ORDER BY 
                   format_date ASC";
-    $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                      appoint_head
-                  WHERE 
-                      YEAR(appoint_date) = ?
-                  GROUP BY 
-                      FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                      format_date ASC";
+     $sqlappoint = "SELECT 
+     FORMAT(appoint_date, 'dd-MM') AS format_date,
+     COUNT(appoint_no) AS appoint_no,
+     CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+     FROM 
+     appoint_head
+     WHERE 
+      year_no = ?
+     GROUP BY 
+     FORMAT(appoint_date, 'dd-MM'), is_status
+     ORDER BY 
+     format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -477,19 +413,20 @@ GROUP BY
                   FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
                   ORDER BY 
                   format_date ASC";
-    $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
-                  AND is_call = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+     $sqlappoint = "SELECT 
+     FORMAT(appoint_date, 'dd-MM') AS format_date,
+     COUNT(appoint_no) AS appoint_no,
+     CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+     FROM 
+     appoint_head
+     WHERE 
+      year_no = ?
+      AND month_no = ?
+     AND is_call = ?
+     GROUP BY 
+     FORMAT(appoint_date, 'dd-MM'), is_status
+     ORDER BY 
+     format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -554,19 +491,20 @@ GROUP BY
                   FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
                   ORDER BY 
                   format_date ASC";
-    $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
-                  AND staff_id = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+     $sqlappoint = "SELECT 
+     FORMAT(appoint_date, 'dd-MM') AS format_date,
+     COUNT(appoint_no) AS appoint_no,
+     CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+     FROM 
+     appoint_head
+     WHERE 
+      year_no = ?
+      AND month_no = ?
+     AND staff_id = ?
+     GROUP BY 
+     FORMAT(appoint_date, 'dd-MM'), is_status
+     ORDER BY 
+     format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -638,18 +576,19 @@ GROUP BY
                   FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
                   ORDER BY 
                   format_date ASC";
-    $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+     $sqlappoint = "SELECT 
+     FORMAT(appoint_date, 'dd-MM') AS format_date,
+     COUNT(appoint_no) AS appoint_no,
+     CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+     FROM 
+     appoint_head
+     WHERE 
+      year_no = ?
+      AND month_no = ?
+     GROUP BY 
+     FORMAT(appoint_date, 'dd-MM'), is_status
+     ORDER BY 
+     format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -715,18 +654,19 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND is_call = ?
-                  AND staff_id = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+    AND is_call = ?
+     AND staff_id = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -800,17 +740,18 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND is_call = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+    AND is_call = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -882,17 +823,18 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND staff_id = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+     AND staff_id = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -957,19 +899,20 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
-                  AND is_call = ?
-                  AND staff_id = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+     AND  month_no = ?
+    AND is_call = ?
+     AND staff_id = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -1043,18 +986,19 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
-                  AND is_call = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+     AND  month_no = ?
+    AND is_call = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -1128,18 +1072,19 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
-                  AND staff_id = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+     AND  month_no = ?
+     AND staff_id = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -1213,18 +1158,19 @@ GROUP BY
                   ORDER BY 
                   format_date ASC";
     $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?           
-                  AND is_call = ?
-                  AND staff_id = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+    FORMAT(appoint_date, 'dd-MM') AS format_date,
+    COUNT(appoint_no) AS appoint_no,
+    CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+    FROM 
+    appoint_head
+    WHERE 
+     year_no = ?
+    AND is_call = ?
+     AND staff_id = ?
+    GROUP BY 
+    FORMAT(appoint_date, 'dd-MM'), is_status
+    ORDER BY 
+    format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -1300,20 +1246,21 @@ GROUP BY
                   FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM')
                   ORDER BY 
                   format_date ASC";
-    $sqlappoint = "SELECT 
-                  FORMAT(appoint_date, 'dd-MM') AS format_date,
-                  COUNT(appoint_no) AS appoint_no
-                  FROM 
-                  appoint_head
-                  WHERE 
-                  YEAR(appoint_date) = ?
-                  AND MONTH(appoint_date) = ?
-                  AND is_call = ?
-                  AND staff_id = ?
-                  GROUP BY 
-                  FORMAT(appoint_date, 'dd-MM')
-                  ORDER BY 
-                  format_date ASC";
+   $sqlappoint = "SELECT 
+   FORMAT(appoint_date, 'dd-MM') AS format_date,
+   COUNT(appoint_no) AS appoint_no,
+   CASE WHEN is_status <> '4' THEN COUNT(appoint_no) END AS appoint_quality
+   FROM 
+   appoint_head
+   WHERE 
+    year_no = ?
+    AND  month_no = ?
+   AND is_call = ?
+    AND staff_id = ?
+   GROUP BY 
+   FORMAT(appoint_date, 'dd-MM'), is_status
+   ORDER BY 
+   format_date ASC";
     $sqlorder = "SELECT MONTH(A.shipment_date) AS month_no,SUM(total_before_discount) AS order_amount,COUNT((A.order_no)) AS order_no
                   FROM order_head A
                   LEFT JOIN so_detail B ON A.order_no = B.order_no
@@ -1367,6 +1314,7 @@ GROUP BY
     $params = array($year_no, $month_no, $channel, $Sales, $is_new);
 }
 
+
 // Execute the first query
 $stmt = sqlsrv_query($objCon, $sqlrevenue, $params);
 if ($stmt === false) {
@@ -1377,14 +1325,7 @@ if ($stmt === false) {
     exit;
 }
 
-$stmtaccu = sqlsrv_query($objCon, $sqlrevenue_accu, $params);
-if ($stmtaccu === false) {
-    $errors = sqlsrv_errors();
-    error_log(print_r($errors, true)); // Log SQL errors for debugging
-    http_response_code(500); // Set HTTP status code to indicate internal server error
-    echo json_encode(["error" => "Failed to execute first query"]);
-    exit;
-}
+
 
 // Initialize an array to hold the first query results
 $revenueData = [];
@@ -1393,11 +1334,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 }
 sqlsrv_free_stmt($stmt);
 
-$revenueaccuData = [];
-while ($row = sqlsrv_fetch_array($stmtaccu, SQLSRV_FETCH_ASSOC)) {
-    $revenueaccuData[] = $row;
-}
-sqlsrv_free_stmt($stmtaccu);
+
 
 // Execute the second query
 $stmt1 = sqlsrv_query($objCon, $sqlappoint, $params);
@@ -1492,8 +1429,7 @@ $data = [
     'segmentData' => $segmentData,
     'costsheetData' => $costsheetData,
     'regionData' => $regionData,
-    'orderData' => $orderData,
-    'revenueaccuData' => $revenueaccuData
+    'orderData' => $orderData
 ];
 
 header('Content-Type: application/json');

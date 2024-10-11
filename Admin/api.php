@@ -22,7 +22,7 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
                    LEFT JOIN ms_appoint_status ms ON a.is_tracking = ms.status_code
 				   LEFT JOIN ms_prospect pp ON a.is_prospect = pp.prospect_code
                    LEFT JOIN  so_customer_status B ON A.qt_no = B.qt_no
-                   WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND is_status <> 'C'  AND B.so_no IS NULL
+                   WHERE A.is_prospect <> '00' AND MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND is_status <> 'C'  AND B.so_no IS NULL
                    ORDER BY qt_date DESC";
      $sqlrevenue = "SELECT 
                     FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
@@ -56,14 +56,17 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
 				  COUNT(CASE WHEN  is_prospect IS NULL    THEN A.qt_no END) AS Unknownss,
 				   COUNT(CASE WHEN  print_qt_count = 0   THEN A.qt_no END) AS Unknowns,
 				 COUNT(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN A.qt_no END) AS Unknown,
-				  SUM(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN so_amount END) AS Unknown_amount,
+				  SUM(CASE WHEN  is_prospect = '00' AND is_tracking IN ('1','3') AND print_qt_count = 0 THEN so_amount END) AS Unknown_amount,
+				  SUM(CASE WHEN  is_prospect = '00' AND is_tracking IN ('2','4') AND print_qt_count = 0 THEN so_amount END) AS lost_Unknown_amount,
 				  COUNT(CASE WHEN  is_prospect = '05' THEN A.qt_no END) AS potential,
-				  SUM(CASE WHEN  is_prospect = '05' THEN so_amount END) AS potential_amount,
+				  SUM(CASE WHEN  is_prospect = '05' AND is_tracking IN ('1','3') THEN so_amount END) AS potential_amount,
+				  SUM(CASE WHEN  is_prospect = '05' AND is_tracking IN ('2','4') THEN so_amount END) AS lost_potential_amount,
 				  COUNT(CASE WHEN  is_prospect = '04' THEN A.qt_no END) AS prospect,
-				  SUM(CASE WHEN  is_prospect = '04' THEN so_amount END) AS prospect_amount,
-				  COUNT(CASE WHEN  is_prospect = '06' 
-				  THEN A.qt_no END) AS pipeline,
-				  SUM(CASE WHEN  is_prospect = '06' THEN so_amount END) AS pipeline_amount
+				  SUM(CASE WHEN  is_prospect = '04'AND is_tracking IN ('1','3') THEN so_amount END) AS prospect_amount,
+				   SUM(CASE WHEN  is_prospect = '04' AND is_tracking IN ('2','4') THEN so_amount END) AS lost_prospect_amount,
+				  COUNT(CASE WHEN  is_prospect = '06' THEN A.qt_no END) AS pipeline,
+				  SUM(CASE WHEN  is_prospect = '06'AND is_tracking IN ('1','3') THEN so_amount END) AS pipeline_amount,
+				  SUM(CASE WHEN  is_prospect = '06' AND is_tracking IN ('2','4') THEN so_amount END) AS lost_pipeline_amount
                   FROM 
                   cost_sheet_head A
                   WHERE 
@@ -80,7 +83,7 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
                    LEFT JOIN ms_appoint_status ms ON a.is_tracking = ms.status_code
 				   LEFT JOIN ms_prospect pp ON a.is_prospect = pp.prospect_code
                    LEFT JOIN  so_customer_status B ON A.qt_no = B.qt_no
-                   WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND A.staff_id = ?  AND is_status <> 'C'  AND B.so_no IS NULL
+                   WHERE A.is_prospect <> '00' AND MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND A.staff_id = ?  AND is_status <> 'C'  AND B.so_no IS NULL
                    ORDER BY qt_date DESC";
      $sqlap = "SELECT 
      FORMAT(appoint_date, 'yyyy-MM') AS format_date,
@@ -96,19 +99,22 @@ if($year_no <> 0 && $month_no <> 0 && $Sales == 'N'){
      format_date ASC";
          $sqlcostsheet = "SELECT 
          FORMAT(qt_date, 'yyyy-MM') AS format_date,
-           SUM(so_amount)AS so_amount,
-         COUNT(A.qt_no) AS qt_no,
-         COUNT(CASE WHEN  is_prospect IS NULL    THEN A.qt_no END) AS Unknownss,
-          COUNT(CASE WHEN  print_qt_count = 0   THEN A.qt_no END) AS Unknowns,
- COUNT(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN A.qt_no END) AS Unknown,
-			SUM(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN so_amount END) AS Unknown_amount,
-         COUNT(CASE WHEN  is_prospect = '05' THEN A.qt_no END) AS potential,
-         SUM(CASE WHEN  is_prospect = '05' THEN so_amount END) AS potential_amount,
-         COUNT(CASE WHEN  is_prospect = '04' THEN A.qt_no END) AS prospect,
-         SUM(CASE WHEN  is_prospect = '04' THEN so_amount END) AS prospect_amount,
-         COUNT(CASE WHEN  is_prospect = '06' 
-         THEN A.qt_no END) AS pipeline,
-         SUM(CASE WHEN  is_prospect = '06' THEN so_amount END) AS pipeline_amount
+	                SUM(so_amount)AS so_amount,
+                  COUNT(A.qt_no) AS qt_no,
+				  COUNT(CASE WHEN  is_prospect IS NULL    THEN A.qt_no END) AS Unknownss,
+				   COUNT(CASE WHEN  print_qt_count = 0   THEN A.qt_no END) AS Unknowns,
+				 COUNT(CASE WHEN  is_prospect = '00' AND print_qt_count = 0 THEN A.qt_no END) AS Unknown,
+				  SUM(CASE WHEN  is_prospect = '00' AND is_tracking IN ('1','3') AND print_qt_count = 0 THEN so_amount END) AS Unknown_amount,
+				  SUM(CASE WHEN  is_prospect = '00' AND is_tracking IN ('2','4') AND print_qt_count = 0 THEN so_amount END) AS lost_Unknown_amount,
+				  COUNT(CASE WHEN  is_prospect = '05' THEN A.qt_no END) AS potential,
+				  SUM(CASE WHEN  is_prospect = '05' AND is_tracking IN ('1','3') THEN so_amount END) AS potential_amount,
+				  SUM(CASE WHEN  is_prospect = '05' AND is_tracking IN ('2','4') THEN so_amount END) AS lost_potential_amount,
+				  COUNT(CASE WHEN  is_prospect = '04' THEN A.qt_no END) AS prospect,
+				  SUM(CASE WHEN  is_prospect = '04'AND is_tracking IN ('1','3') THEN so_amount END) AS prospect_amount,
+				   SUM(CASE WHEN  is_prospect = '04' AND is_tracking IN ('2','4') THEN so_amount END) AS lost_prospect_amount,
+				  COUNT(CASE WHEN  is_prospect = '06' THEN A.qt_no END) AS pipeline,
+				  SUM(CASE WHEN  is_prospect = '06'AND is_tracking IN ('1','3') THEN so_amount END) AS pipeline_amount,
+				  SUM(CASE WHEN  is_prospect = '06' AND is_tracking IN ('2','4') THEN so_amount END) AS lost_pipeline_amount
          FROM 
          cost_sheet_head A
          WHERE 

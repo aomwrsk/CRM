@@ -8,11 +8,12 @@ if($staff === 0 || $level <= 1){
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <!--meta http-equiv="refresh" content="300"-->
-  <title>Dashboard - CRM</title>
+
+  <title>Dashboard - Appoint</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -231,7 +232,7 @@ if($staff === 0 || $level <= 1){
               <hr class="dropdown-divider">
             </li>
 
-            <li>
+            <!--li>
               <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
@@ -259,7 +260,7 @@ if($staff === 0 || $level <= 1){
             </li>
             <li>
               <hr class="dropdown-divider">
-            </li>
+            </li-->
 
             <li>
               <a class="dropdown-item d-flex align-items-center" href="/CRM/log_out.php">
@@ -282,25 +283,13 @@ if($staff === 0 || $level <= 1){
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#dashboards-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link collapsed" href="index.php">
           <i class="bi bi-grid"></i>
-          <span>Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
+          <span>Dashboard</span>
         </a>
-        <ul id="dashboards-nav" class="nav-content show" data-bs-parent="#sidebar-nav">
-        <li>
-            <a href="index.php" >
-              <i class="bi bi-circle"></i><span>CRM</span>
-            </a>
-          </li>
-          <li>
-            <a href="index-Maintanance.php"class="active">
-              <i class="bi bi-circle"></i><span>Maintanance</span>
-            </a>
-          </li>
-        </ul>
-      </li>
+      </li><!-- End Dashboard Nav -->
 
-      <li class="nav-item">
+       <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-menu-button-wide"></i><span>Components</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -376,60 +365,60 @@ if($staff === 0 || $level <= 1){
             </a>
           </li>
         </ul>
-      </li>
+      </li--><!-- End Components Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
+          <!--li>
             <a href="forms-elements.html">
               <i class="bi bi-circle"></i><span>Form Elements</span>
             </a>
-          </li>
+          </li-->
           <li>
             <a href="forms-appoint.php">
-              <i class="bi bi-circle"></i><span>บันทึกข้อมูลลูกค้า</span>
+              <i class="bi bi-circle"></i><span>Form Appoint</span>
             </a>
           </li>
-          <li>
-            <a href="forms-order.php">
-              <i class="bi bi-circle"></i><span>บันทึก Order</span>
+          <!--li>
+            <a href="forms-editors.html">
+              <i class="bi bi-circle"></i><span>Form Editors</span>
             </a>
           </li>
           <li>
             <a href="forms-validation.html">
               <i class="bi bi-circle"></i><span>Form Validation</span>
             </a>
-          </li>
+          </li-->
         </ul>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-          <li>
+        <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+          <!--li>
             <a href="tables-general.html">
               <i class="bi bi-circle"></i><span>General Tables</span>
             </a>
-          </li>
+          </li-->
           <li>
             <a href="tables-data.php">
-              <i class="bi bi-circle"></i><span>Data Appoint</span>
+              <i class="bi bi-circle"></i><span>Update Status</span>
             </a>
           </li>
           <li>
-            <a href="tables-CS.html">
-              <i class="bi bi-circle"></i><span>Data Cost sheet</span>
+            <a href="tables-activity.php" class="active">
+              <i class="bi bi-circle"></i><span>Activity</span>
             </a>
           </li>
         </ul>
-      </li>
+      </li><!-- End Tables Nav -->
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -450,9 +439,9 @@ if($staff === 0 || $level <= 1){
             </a>
           </li>
         </ul>
-      </li>
+      </li--><!-- End Charts Nav -->
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-gem"></i><span>Icons</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -473,16 +462,16 @@ if($staff === 0 || $level <= 1){
             </a>
           </li>
         </ul>
-      </li>
+      </li--><!-- End Icons Nav -->
 
       <li class="nav-heading">Pages</li>
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" href="users-profile.html">
           <i class="bi bi-person"></i>
           <span>Profile</span>
         </a>
-      </li>
+      </li--><!-- End Profile Page Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="permission.php">
@@ -491,7 +480,7 @@ if($staff === 0 || $level <= 1){
         </a>
       </li>
 
-      <li class="nav-item">
+      <!--li class="nav-item">
         <a class="nav-link collapsed" href="pages-contact.html">
           <i class="bi bi-envelope"></i>
           <span>Contact</span>
@@ -521,53 +510,125 @@ if($staff === 0 || $level <= 1){
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-blank.html">
-          <i class="bi bi-calendar-day"></i>
+          <i class="bi bi-file-earmark"></i>
           <span>Blank</span>
         </a>
-      </li>
+      </li-->
 
     </ul>
 
-  </aside>
+  </aside><!-- End Sidebar-->
 
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Dashboard</h1>
+      <h1>Data Tables</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li>
+          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">Data</li>
         </ol>
-        
       </nav>
-      <div class="col-lg-12">
-        <div class="row">
-      <div class="col-xxl-4 col-md-6">
-        <div class="form-floating mb-3">
-          <select class="form-select" id="month" aria-label="Month"onchange="fetchYear()">
-            <option value="0">-</option>
-          </select>
-          <label for="month">Month</label>
-        </div>
-      </div>
-      <div class="col-xxl-4 col-md-6">
-        <div class="form-floating mb-3">
-          <select class="form-select" id="year" aria-label="Year"onchange="fetchYear()">
-          </select>
-          <label for="year">Year</label>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-      
     </div><!-- End Page Title -->
 
-    <section class="section dashboard">
+    <section class="section">
       <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Datatables</h5>
+              <div class="col-lg-8">
+                <div class="row">
+                  <div class="col-xxl-3 col-md-4">
+                    <div class="form-floating mb-3">
+                      <select class="form-select" id="sales" aria-label="Sales"onchange="fetchData()">
+                        <option selected value="N">-</option>
+                      </select>
+                      <label for="sales">Sales</label>
+                    </div>
+                  </div>
+                  <div class="col-xxl-3 col-md-4">
+                    <div class="form-floating mb-3">
+                      <select class="form-select" id="channel" aria-label="channel"onchange="fetchData()">
+                        <option selected value="N">-</option>
+                        <option value="I">Online</option>
+                        <option value="O">Offline</option>
+                      </select>
+                      <label for="channel">Channels</label>
+                    </div>
+                  </div>
+                  <div class="col-xxl-3 col-md-4">
+                    <div class="form-floating mb-3">
+                      <select class="form-select" id="weekly" aria-label="weekly"onchange="fetchData()">
+                        <option selected value="N">-</option>
+                        <option value="1">week1</option>
+                        <option value="2">week2</option>
+                        <option value="3">week3</option>
+                        <option value="4">week4</option>
+                      </select>
+                      <label for="weekly">Week</label>
+                    </div>
+                  </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="form-floating mb-3">
+                  <select class="form-select" id="month" aria-label="Month"onchange="fetchData()">
+                   
+                  </select>
+                  <label for="month">Month</label>
+                </div>
+              </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="form-floating mb-3">
+                  <select class="form-select" id="year" aria-label="Year"onchange="fetchData()">
+                  </select>
+                  <label for="year">Year</label>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+          <div class="row">
+
+            <!-- Sales Card -->
+            <div class="col-xxl-2 col-md-4">
+              <div class="card info-card customers-card">
+
+                <!--div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#" id= "aponline" value="I">Online</a></li>
+                    <li><a class="dropdown-item" href="#" id ="apoffline" value="O">Offline</a></li>
+                  </ul>
+                </div-->
+
+                <div class="card-body">
+                  <h5 class="card-title">Appoint</h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-people"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6 id="appoint"></h6>
+                      <!--span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase from last month</span-->
+                      <span id="apNoqt" class="text-primary large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">ราย</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Sales Card -->
 <!-- Customers Card -->
-<div class="col-xxl-3 col-md-6">
+<div class="col-xxl-2 col-md-4">
   <div class="card info-card sales-card">
 
     <!--div class="filter">
@@ -584,26 +645,138 @@ if($staff === 0 || $level <= 1){
     </div-->
 
     <div class="card-body">
-      <h5 class="card-title">ค่าซ่อมภาชนะ</h5>
+      <h5 class="card-title">CostSheet</h5>
 
       <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-          <i class="ri-tools-fill"></i>
+          <i class="bi bi-cart"></i>
         </div>
-        <div class="ps-5">
-          <h6 id="container_number"></h6>
-          <span id="container_value" class="text-success large pt-2 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
-
+        <div class="ps-2">
+          <h6 id="qt_number"></h6>
+          <span id="qt_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+          <br>
+          <span id="qt_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
         </div>
-        
       </div>
 
     </div>
   </div>
 
 </div><!-- End Customers Card -->
+
+<!-- Customers Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card sales-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Potential</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-2">
+          <h6 id="qt_potential_number"></h6>
+          <span id="qt_potential_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+          <br>
+          <span id="qt_potential_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+<!-- Customers Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card sales-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Prospect</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-2">
+          <h6 id="qt_prospect_number"></h6>
+          <span id="qt_prospect_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+          <br>
+          <span id="qt_prospect_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+<!-- Customers Card -->
+<div class="col-xxl-2 col-md-4">
+  <div class="card info-card sales-card">
+
+    <!--div class="filter">
+      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <li class="dropdown-header text-start">
+          <h6>Filter</h6>
+        </li>
+
+        <li><a class="dropdown-item" href="#">Today</a></li>
+        <li><a class="dropdown-item" href="#">This Month</a></li>
+        <li><a class="dropdown-item" href="#">This Year</a></li>
+      </ul>
+    </div-->
+
+    <div class="card-body">
+      <h5 class="card-title">Pipeline</h5>
+
+      <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-cart"></i>
+        </div>
+        <div class="ps-3">
+          <h6 id="qt_pipeline_number"></h6>
+          <span id="qt_pipeline_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+          <br>
+          <span id="qt_pipeline_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- End Customers Card -->
+
+
+
 <!-- Revenue Card -->
-<div class="col-xxl-3 col-md-6">
+<div class="col-xxl-2 col-md-4">
   <div class="card info-card revenue-card">
 
     <!--div class="filter">
@@ -620,15 +793,15 @@ if($staff === 0 || $level <= 1){
     </div-->
 
     <div class="card-body">
-      <h5 class="card-title">ค่าซ่อมรถขนส่ง</h5>
+      <h5 class="card-title">Revenue</h5>
 
       <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-          <i class="bx bxs-truck"></i>
+          <i class="bi bi-cash-stack"></i>
         </div>
         <div class="ps-3">
-          <h6 id="tp_number"></h6>
-          <span id="tp_value" class="text-success large pt-2 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
+          <h6 id="so_number"></h6>
+          <span id="revenue" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
 
         </div>
       </div>
@@ -636,298 +809,36 @@ if($staff === 0 || $level <= 1){
 
   </div>
 </div><!-- End Revenue Card -->
-<!-- Revenue Card -->
-<div class="col-xxl-3 col-md-6">
-  <div class="card info-card revenue-card">
-
-    <!--div class="filter">
-      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-          <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Today</a></li>
-        <li><a class="dropdown-item" href="#">This Month</a></li>
-        <li><a class="dropdown-item" href="#">This Year</a></li>
-      </ul>
-    </div-->
-
-    <div class="card-body">
-      <h5 class="card-title">ค่าซ่อมรถส่วนกลาง</h5>
-
-      <div class="d-flex align-items-center">
-        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-          <i class="bx bxs-truck"></i>
-        </div>
-        <div class="ps-3">
-          <h6 id="oc_number"></h6>
-          <span id="oc_value" class="text-success large pt-2 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div><!-- End Revenue Card -->
-<!-- Revenue Card -->
-<div class="col-xxl-3 col-md-6">
-  <div class="card info-card revenue-card">
-
-    <!--div class="filter">
-      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-          <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Today</a></li>
-        <li><a class="dropdown-item" href="#">This Month</a></li>
-        <li><a class="dropdown-item" href="#">This Year</a></li>
-      </ul>
-    </div-->
-
-    <div class="card-body">
-      <h5 class="card-title">ค่าซ่อมCL</h5>
-
-      <div class="d-flex align-items-center">
-        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-          <i class="bx bxs-truck"></i>
-        </div>
-        <div class="ps-3">
-          <h6 id="cl_number"></h6>
-          <span id="cl_value" class="text-success large pt-2 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div><!-- End Revenue Card -->
-        <!-- Left side columns -->
-        <div class="col-lg-6">
-          <div class="row">
- <!-- Reports -->
- <div class="col-12">
-              <div class="card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#" onclick="fetchData('month')">This Month</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="fetchData('year')">This Year</a></li>
-                    <input type="text" id="dataContainer">
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Reports <!--span>|Today</span--></h5>
-
-                  <!-- Line Chart -->
-                  <div id="reportsChart"></div>
-
-                 
-                  <!-- End Line Chart -->
-
-                </div>
-
-              </div>
-            </div><!-- End Reports -->
-            <!-- Reports -->
- <div class="col-12">
-              <div class="card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#" onclick="fetchData('month')">This Month</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="fetchData('year')">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Reports <!--span>|Today</span--></h5>
-
-                  <!-- Line Chart -->
-                  <div id="barChart"></div>
-
-                 
-                  <!-- End Line Chart -->
-
-                </div>
-
-              </div>
-            </div><!-- End Reports -->
- <!-- Recent Sales -->
- <div class="col-12">
-  <div class="card recent-sales overflow-auto">
-
-    <!--div class="filter">
-      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-          <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" value="0">Today</a></li>
-        <li><a class="dropdown-item" href="#">This Month</a></li>
-        <li><a class="dropdown-item" href="#">This Year</a></li>
-      </ul>
-    </div-->
-
-    <!--div class="card-body">
-      <h5 class="card-title">Region</h5>
-
-      <table id="region" class="table table-borderless datatable">
-        <thead>
-          <tr>
-            <th scope="col">Product</th>
-            <th scope="col">North</th>
-            <th scope="col">Central</th>
-            <th scope="col">East</th>
-            <th scope="col">North-East</th>
-            <th scope="col">West</th>
-            <th scope="col">South</th>
-          </tr>
-        </thead>
-        <tbody>
-         
-        </tbody>
-      </table>
-
-    </div-->
-
-  </div>
-</div><!-- End Recent Sales -->
-            <!-- Recent Sales>
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" value="0">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Recent Sales </h5>
-
-                  <table  class="table table-borderless datatable">
-                    <thead>
+          </div>
+    </section>
+              <!-- Table with stripped rows -->
+                <input type="hidden" id="staff" name="staff" value="<?php echo $staff;?>">
+                <div class="modal-body">
+              <table id="tableAP" class="table table-borderless datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">วันที่ติดต่อ</th>
+                    <th scope="col">Appoint</th>
+                    <th scope="col">CostSheet</th>
+                    <th scope="col">Potential</th>
+                    <th scope="col">Prospect</th>
+                    <th scope="col">Pipeline</th>
+                    <th scope="col">ยอดขาย</th>
+                    <th scope="col">เหตุผล</th>
+                  </tr>
+                </thead>
+                <tbody>
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row"><a href="#">#2457</a></th>
-                        <td>Brandon Jacob</td>
-                        <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                        <td>$64</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2147</a></th>
-                        <td>Bridie Kessler</td>
-                        <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                        <td>$47</td>
-                        <td><span class="badge bg-warning">Pending</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2049</a></th>
-                        <td>Ashleigh Langosh</td>
-                        <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                        <td>$147</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Angus Grady</td>
-                        <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                        <td>$67</td>
-                        <td><span class="badge bg-danger">Rejected</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Raheem Lehner</td>
-                        <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                        <td>$165</td>
-                        <td><span class="badge bg-success">Approved</span></td>
                       </tr>
                     </tbody>
                   </table>
-
-                </div>
-
               </div>
-            </div><End Recent Sales -->
+              <!-- End Table with stripped rows -->
 
+            </div>
           </div>
-        </div><!-- End Left side columns -->
 
-        <!-- Right side columns -->
-        <div class="col-lg-6">
-       
-          <!-- Website Traffic -->
-          <!--div class="card">
-        
-            <div class="card-body pb-4" style="display: flex;
-      justify-content: space-between;">
-      <div style="flex: 1;text-align: center;">
-        <h5 class="card-title">AOV</h5>
-        <div class="ps-2">
-          <h4 id="AOV" style="font-weight: 700;"></h4>
-          <span id="AOV_percent"class="text-success large pt-1 fw-bold"></span>
         </div>
-      </div>
-      <div style="flex: 1; text-align: center;">
-        <h5 class="card-title">Winrate</h5>
-        <div class="ps-2">
-          <h4 id="winrate" style="font-weight: 700;"></h4>
-          <span id="winrate_percent" class="text-success large pt-1 fw-bold"></span>
-        </div>
-      </div>
-      <div style="flex: 1; text-align: center;">
-        <h5 class="card-title">Average time</h5>
-        <div class="ps-2">
-          <h4 id="AT" style="font-weight: 700;"></h4>
-          <span id="AT_percent" class="text-success large pt-1 ps-2 fw-bold">Days</span>
-        </div>
-      </div>
-            </div>
-          </div-->
-           
-
-          <div class="card">
-            
-            <div class="card-body pb-0">
-              <h5 class="card-title">รายการค่าซ่อม</h5>
-              <div id="pieChart" style="min-height: 400px;" class="echart"></div>
-            </div>
-            
-          </div><!-- End Website Traffic -->
-
-
-
-        </div><!-- End Right side columns -->
-
       </div>
     </section>
 
@@ -943,7 +854,7 @@ if($staff === 0 || $level <= 1){
       <!-- You can delete the links only if you purchased the pro version. -->
       <!-- Licensing information: https://bootstrapmade.com/license/ -->
       <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-      Designed by <a href="https://bootstrapmade.com/">-AOM SK-</a>
+      Designed by <a href="#">-AOM SK-</a>
     </div>
   </footer><!-- End Footer -->
 
@@ -961,8 +872,7 @@ if($staff === 0 || $level <= 1){
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-  <script src="assets/js/maintanance-script.js"></script>
-  <script src="assets/js/api-GPS.js"></script>
+  <script src="assets/js/table.js"></script>
 </body>
 
 </html>

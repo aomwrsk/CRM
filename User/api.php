@@ -20,7 +20,7 @@ $staff = isset($_GET['staff']) ? $_GET['staff'] : NULL;
                    FROM cost_sheet_head A
                    LEFT JOIN ms_appoint_status ms ON a.is_tracking = ms.status_code
 				   LEFT JOIN ms_prospect pp ON a.is_prospect = pp.prospect_code
-                   WHERE MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND A.staff_id = ?";
+                   WHERE A.is_prospect <> '00' AND MONTH(A.qt_date) = ? AND YEAR(A.qt_date) = ? AND A.staff_id = ?";
     $sqlrevenue = "SELECT 
                    FORMAT(DATEFROMPARTS(A.year_no, A.month_no,1), 'yyyy-MM') AS format_date,
                    SUM(A.total_before_vat) AS so_amount,

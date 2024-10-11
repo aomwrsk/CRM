@@ -400,21 +400,21 @@ if($staff === 0 || $level <= 1){
           <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-          <!--li>
-            <a href="tables-general.html">
-              <i class="bi bi-circle"></i><span>General Tables</span>
+          <li>
+            <a href="tables-appoint.php">
+              <i class="bi bi-circle"></i><span>Tables Appoint</span>
             </a>
-          </li-->
+          </li>
           <li>
             <a href="tables-data.php" class="active">
               <i class="bi bi-circle"></i><span>Update Status</span>
             </a>
           </li>
-          <!--li>
-            <a href="tables-CS.html">
-              <i class="bi bi-circle"></i><span>Data Cost sheet</span>
+          <li>
+            <a href="tables-activity.php">
+              <i class="bi bi-circle"></i><span>Activity</span>
             </a>
-          </li-->
+          </li>
         </ul>
       </li><!-- End Tables Nav -->
 
@@ -583,7 +583,7 @@ if($staff === 0 || $level <= 1){
           <div class="row">
 
             <!-- Sales Card -->
-            <div class="col-xxl-2 col-md-4">
+            <div class="col-xxl-3 col-md-4">
               <div class="card info-card customers-card">
 
                 <!--div class="filter">
@@ -606,7 +606,9 @@ if($staff === 0 || $level <= 1){
                       <i class="bi bi-people"></i>
                     </div>
                     <div class="ps-3">
+                    <a href="tables-appoint.php">
                       <h6 id="appoint"></h6>
+                      </a>
                       <!--span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase from last month</span-->
                       <span id="apNoqt" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">ราย</span>
                     </div>
@@ -617,10 +619,10 @@ if($staff === 0 || $level <= 1){
             </div><!-- End Sales Card -->
 
 <!-- Customers Card -->
-<div class="col-xxl-2 col-md-4">
+<!--div class="col-xxl-2 col-md-4">
   <div class="card info-card sales-card">
 
-    <!--div class="filter">
+    <div class="filter">
       <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
       <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
         <li class="dropdown-header text-start">
@@ -631,7 +633,7 @@ if($staff === 0 || $level <= 1){
         <li><a class="dropdown-item" href="#">This Month</a></li>
         <li><a class="dropdown-item" href="#">This Year</a></li>
       </ul>
-    </div-->
+    </div>
 
     <div class="card-body">
       <h5 class="card-title">CostSheet</h5>
@@ -640,17 +642,18 @@ if($staff === 0 || $level <= 1){
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
           <i class="bi bi-cart"></i>
         </div>
-        <div class="ps-3">
+        <div class="ps-2">
           <h6 id="qt_number"></h6>
           <span id="qt_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
-
+          <br>
+          <span id="qt_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
         </div>
       </div>
 
     </div>
   </div>
 
-</div><!-- End Customers Card -->
+</div--><!-- End Customers Card -->
 
 <!-- Customers Card -->
 <div class="col-xxl-2 col-md-4">
@@ -679,7 +682,8 @@ if($staff === 0 || $level <= 1){
         <div class="ps-3">
           <h6 id="qt_potential_number"></h6>
           <span id="qt_potential_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
-
+          <br>
+          <span id="qt_potential_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
         </div>
       </div>
 
@@ -711,10 +715,11 @@ if($staff === 0 || $level <= 1){
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
           <i class="bi bi-cart"></i>
         </div>
-        <div class="ps-3">
+        <div class="ps-2">
           <h6 id="qt_prospect_number"></h6>
           <span id="qt_prospect_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
-
+          <br>
+          <span id="qt_prospect_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
         </div>
       </div>
 
@@ -749,7 +754,8 @@ if($staff === 0 || $level <= 1){
         <div class="ps-3">
           <h6 id="qt_pipeline_number"></h6>
           <span id="qt_pipeline_value" class="text-success large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
-
+          <br>
+          <span id="qt_pipeline_lost_value" class="text-danger large pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1">THB</span>
         </div>
       </div>
 
@@ -761,7 +767,7 @@ if($staff === 0 || $level <= 1){
 
 
 <!-- Revenue Card -->
-<div class="col-xxl-2 col-md-4">
+<div class="col-xxl-3 col-md-4">
   <div class="card info-card revenue-card">
 
     <!--div class="filter">
