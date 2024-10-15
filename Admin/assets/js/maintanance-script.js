@@ -17,7 +17,6 @@ fetch(url)
   console.log('Data:', data); // Log the data to check the response
   updateTable(data);
   BarChart(data);
-  updateChart(data.graphpieData);
   updateReport(data);
 
 })
@@ -137,62 +136,7 @@ const tbody = document.querySelector('#region tbody');
     
   
     //*****************************pie segment chart ***************************************************//
-    function updateChart(graphpieData) {
-      // Prepare chart data with segment_count as the value for the pie chart
-      const chartData = graphpieData.map(item => ({
-        value: item.total_amount, // This will be the displayed value in the pie chart
-        name: item.repair_name, // Segment name for the pie slices
-        total_before_vat: item.total_amounts, // Include total_before_vat for the tooltip
-      }));
-    
-      // Initialize chart on the element with ID 'trafficChart'
-      // Set chart options
-      echarts.init(document.querySelector("#pieChart")).setOption({
-        tooltip: {
-          trigger: 'item',
-          formatter: function (params) {
- // Format total_before_vat with commas and two decimal places
- const formattedValue = params.data.total_before_vat.toLocaleString('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-});
-
-// Calculate the percentage of the segment
-const percentage = params.percent.toFixed(2);
-            return `
-              <b>${params.name}</b><br>
-              Value: ${formattedValue}<br>
-              Ratio: ${percentage} %      
-            `;
-          }
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left'
-        },
-        series: [{
-          name: 'Maintanance',
-          type: 'pie',
-          radius: ['50%'],
-          avoidLabelOverlap: false,
-          label: {
-            show: false,
-            position: 'center'
-          },
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: chartData,
-        }]
-      });
-    }
+ 
     function BarChart(data) {
       let names = [];
       let values = [];
@@ -202,27 +146,38 @@ const percentage = params.percent.toFixed(2);
         names.push(bar.repair_name);  // Categories (names) for x-axis
         values.push(bar.total_amount); // Values for the bars
       });
-        new ApexCharts(document.querySelector("#barChart"), {
-          series: [{
-            data: values
-          }],
-          chart: {
-            type: 'bar',
-            height: 350
-          },
-          plotOptions: {
-            bar: {
-              borderRadius: 4,
-              horizontal: true,
-            }
-          },
-          dataLabels: {
-            enabled: false
-          },
-          xaxis: {
-            categories: names,
+      echarts.init(document.querySelector("#barChart")).setOption({
+        title: {
+          text: 'List'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
           }
-        }).render();
+        },
+        legend: {},
+        grid: {
+          left: '2%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value',
+          boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+          type: 'category',
+          data: names
+        },
+        series: [{
+            name: names,
+            type: 'bar',
+            data: values
+          }  
+        ]
+      });
 
     }
     document.addEventListener('DOMContentLoaded', fetchYear);
