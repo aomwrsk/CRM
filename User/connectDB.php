@@ -2,7 +2,7 @@
 function connectDB()
 {
     // Database connection parameters
-    $serverName = "203.151.66.176";  // IP address or hostname of the SQL Server
+    $serverName = "203.151.66.176,55449";  // IP address or hostname of the SQL Server
     $userName = "sa";             // SQL Server login username
     $userPassword = "System2560";      // SQL Server login password
     $dbName = "EntechWebDB";            // Name of the database to connect to
