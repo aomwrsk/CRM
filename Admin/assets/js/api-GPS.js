@@ -28,7 +28,7 @@ fetch("https://fleetapi-th.cartrack.com/rest/trips?start_timestamp=2024-10-08 00
         if (Array.isArray(data.data)) {
              
             // Extract only the vehicle_id and registration from each trip
-            const filteredData = data.data.map(trip => ({
+            const tripData = data.data.map(trip => ({
                 registration: trip.registration,
                 start_timestamp: trip.start_timestamp,
                 end_timestamp: trip.end_timestamp,
@@ -36,14 +36,17 @@ fetch("https://fleetapi-th.cartrack.com/rest/trips?start_timestamp=2024-10-08 00
                 start_location: trip.start_location,
                 end_location: trip.end_location,
                 trip_distance: trip.trip_distance,
+                start_geofence_name : trip.start_geofence_name,
+                end_geofence_name : trip.end_geofence_name,
                 start_coordinates_lat: trip.start_coordinates.latitude,
                 start_coordinates_long: trip.start_coordinates.longitude,
                 end_coordinates_lat: trip.end_coordinates.latitude,
                 end_coordinates_long: trip.end_coordinates.longitude
             }));
 
-            console.log('Filtered Data:', filteredData);  // Debug: log the filtered data
-            exportToExcel(filteredData);
+            console.log('Filtered Data:', tripData);  // Debug: log the filtered data
+           /* exportToExcel(filteredData);*/
+            postDataToPHP(tripData);
             // Export the filtered data to Excel
              // Call the function to export data
         } else {
@@ -53,7 +56,7 @@ fetch("https://fleetapi-th.cartrack.com/rest/trips?start_timestamp=2024-10-08 00
     .catch(error => console.log('Error:', error));
 
 // Function to export data to Excel
-function exportToExcel(data) {
+/*function exportToExcel(data) {
     // Create a new workbook and a new sheet
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(data);
@@ -63,16 +66,16 @@ function exportToExcel(data) {
 
     // Generate the Excel file and trigger download
     XLSX.writeFile(wb, 'trips_data1.xlsx');
-}
+}*/
 
 // Function to post data to PHP
-function postDataToPHP(data) {
-    fetch('fetch-GPS.php', {
+function postDataToPHP(tripData) {
+    fetch('http://localhost:80/insertTrip', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',  // Send data as JSON
         },
-        body: JSON.stringify(data)  // Send the filtered data as a JSON string
+        body: JSON.stringify(filteredData)  // Send the filtered data as a JSON string
     })
     .then(response => {
         if (!response.ok) {
